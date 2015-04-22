@@ -11,10 +11,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>一保七网盘</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="/cloud/css/bootstrap.min.css" rel="stylesheet">
     <!-- The styles -->
 
-    <link href="css/charisma-app.css" rel="stylesheet">
+    <link href="/cloud/css/charisma-app.css" rel="stylesheet">
 
 
 
@@ -198,15 +198,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         </div>
                         <div class="box-content" >
                             <!-- put your content here -->
-                            <div>
+                         <div>
                                 <div >
-                                    <form id="uploadform" action="testFileUpload" method="POST" enctype="multipart/form-data" >
+                                    <form id="uploadform" action="/cloud/file/upload" method="POST" enctype="multipart/form-data" >
                                         <div class="form-group">
                                             <label class="sr-only">上传文件</label>
-                                            <input id="file" type="file" multiple="true" style="display: none">
+                                            <input id="file" type="file" multiple="true"  name="file" style="display: none">
                                             <div class="input-append" style="text-align: center;margin-top: 200px">
                                                 <input id="showInfo" class="input-large"  onclick="$('input[id=file]').click();" type="text" style="height:30px;width: 600px">
-                                                <a class="btn btn-success" role="button" onclick="showFile();">上传</a>
+                                                <input class="btn btn-success"  onclick="showFile();" type="submit" value="上传">
                                             </div>
                                         </div>
                                     </form>
@@ -217,7 +217,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </div>
 
 
-
+  
+    
 
                             </div>
 
@@ -236,9 +237,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 
-<script src="js/jquery-2.1.3.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.cookie.js"></script>
+<script src="/cloud/js/jquery-2.1.3.min.js"></script>
+<script src="/cloud/js/bootstrap.min.js"></script>
+<script src="/cloud/js/jquery.cookie.js"></script>
 
 
 
@@ -270,6 +271,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         }
         document.getElementById("fileInfo").innerHTML = tableTitle + info1 + "</tbody></table>";
         document.getElementById("fileInfo").style.display = "block";
+        
     }
 </script>
 
