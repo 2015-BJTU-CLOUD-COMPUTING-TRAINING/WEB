@@ -17,5 +17,19 @@ public class UserServiceImpl implements IUserService{
 		// TODO Auto-generated method stub
 		return this.userDao.selectByPrimaryKey(userId);
 	}
+	@Override
+	public int save(User user) {
+		// TODO Auto-generated method stub
+		return this.userDao.myinsert(user);
+		
+		
+		
+	}
+	@Override
+	public User getUserByNameAndPassword(User user) {
+		// TODO Auto-generated method stub
+		System.out.println("service have be created");
+		return this.userDao.selectByNameAndPassword(user);
+	}
 
 }
