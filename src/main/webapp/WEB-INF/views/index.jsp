@@ -195,7 +195,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <a class="btn btn-default" href="#" >
+                                <a class="btn btn-default" href="file/download" >
                                     <i class="glyphicon glyphicon-download icon-white"></i>
                                     下载
                                 </a>
