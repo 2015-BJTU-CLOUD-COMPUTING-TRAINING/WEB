@@ -79,13 +79,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- user dropdown starts -->
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"> admin</span>
+                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"><%=request.getSession().getAttribute("currentUser")%></span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
                 <li><a href="#">Profile</a></li>
                 <li class="divider"></li>
-                <li><a href="login.html">Logout</a></li>
+                <li><a href="logout">Logout</a></li>
             </ul>
         </div>
         <!-- user dropdown ends -->

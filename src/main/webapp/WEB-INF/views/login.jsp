@@ -88,18 +88,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
             <div class="item active">
-                <img src="images/网盘10.jpg"  alt="1 slide">
+                <img src="/cloud/images/网盘10.jpg"  alt="1 slide">
                 <div class="carousel-caption">
                 </div>
             </div>
             <div class="item">
-                <img src="images/网盘20.jpg" alt="2 slide">
+                <img src="/cloud/images/网盘20.jpg" alt="2 slide">
                 <div class="carousel-caption">
                 </div>
             </div>
 
             <div class="item">
-                <img src="images/网盘30.jpg" alt="3 slide">
+                <img src="/cloud/images/网盘30.jpg" alt="3 slide">
                 <div class="carousel-caption">
                 </div>
             </div>
@@ -118,10 +118,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
     <div class="container" id="loginform"> 
             <div id="loginTitle" >登&nbsp;&nbsp;&nbsp;录</div>
-            <form  method="post" action="user/login">
+            <form  method="post" action="login">
+           
                 <div class="form-group">
                 
                     <label for="InputUsername" class="sr-only">UserName</label>
+                    ${requestScope.wrong }
                     <input type="text" class="form-control" id="InputUsername" name="userName" placeholder="UserName">
                 </div>
                 <div class="form-group">

@@ -55,7 +55,7 @@
     <!-- 配置直接转发的页面 -->
 	<!-- 可以直接相应转发的页面, 而无需再经过 Handler 的方法.  
 		将jsp页面都放置在WEB-INF下（防止直接路径访问），所以所有的超链接都通过view-controller来转发	-->
-	<mvc:view-controller path="/" view-name="login"/>
+	
 	<mvc:view-controller path="registview" view-name="regist"/>
 	<mvc:view-controller path="uploadview" view-name="upload"/>
 	<mvc:view-controller path="shareview" view-name="share"/>
