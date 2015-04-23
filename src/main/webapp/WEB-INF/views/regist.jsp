@@ -54,7 +54,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <h2>注 册</h2>
                 </div>
 
-                <form id="defaultForm" method="post" class="form-horizontal" action="user/regists">
+                <form id="defaultForm" method="post" class="form-horizontal" action="regists">
               
 
                     <div class="form-group">

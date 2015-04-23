@@ -28,7 +28,6 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	public User getUserByNameAndPassword(User user) {
 		// TODO Auto-generated method stub
-		System.out.println("service have be created");
 		return this.userDao.selectByNameAndPassword(user);
 	}
 

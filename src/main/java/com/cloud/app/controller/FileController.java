@@ -6,11 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +27,22 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.cloud.util.operateFile;
+import com.cloud.app.model.User;
+import com.cloud.app.model.UserFile;
+import com.cloud.app.service.IFileService;
 
 @Controller
 @RequestMapping("/file")
 public class FileController {
+
 	
 	@Resource
-	operateFile operateFile;
+	IFileService fileService;
 	
 	@RequestMapping("/upload")
 	public String addUsers(@RequestParam("file") MultipartFile[] files,
 			HttpServletRequest request) {
-
+		User user=(User) request.getSession().getAttribute("currentUser");
 		for (MultipartFile file : files) {
 			
 			System.out.println("文件类型："+file.getContentType());
@@ -44,7 +50,8 @@ public class FileController {
 		      System.out.println("文件大小:"+file.getSize());
 		      System.out.println(".................................................");
 			if (!file.isEmpty()) {
-				operateFile.saveFile(file);
+				//save file
+				fileService.saveFile(file, request,user.getUserId());
 			}
 		}
 		return "upload";
@@ -57,7 +64,7 @@ public class FileController {
 //			String storeName = "Spring3.xAPI_zh.chm";  
 	    String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
 	    String contentType = "application/octet-stream";  
-	    operateFile.getFile(request, response, storeName, contentType);  
+	    fileService.getFile(request, response, storeName, contentType);  
 	    return null;  
 	  }  
 }
