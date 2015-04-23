@@ -10,7 +10,7 @@
     <result column="FILE_MD5" property="fileMd5" jdbcType="VARCHAR" />
     <result column="FILE_URL" property="fileUrl" jdbcType="VARCHAR" />
     <result column="FILE_TYPE" property="fileType" jdbcType="VARCHAR" />
-    <result column="FILE_SIZE" property="fileSize" jdbcType="INTEGER" />
+    <result column="FILE_SIZE" property="fileSize" jdbcType="BIGINT" />
     <result column="COMMENT" property="comment" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -32,7 +32,7 @@
     insert into HDFS (FILE_MD5, FILE_URL, FILE_TYPE, 
       FILE_SIZE, COMMENT)
     values (#{fileMd5,jdbcType=VARCHAR}, #{fileUrl,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, 
-      #{fileSize,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
+      #{fileSize,jdbcType=BIGINT}, #{comment,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cloud.app.model.HDFS" >
     <!--
@@ -43,7 +43,7 @@
     set FILE_MD5 = #{fileMd5,jdbcType=VARCHAR},
       FILE_URL = #{fileUrl,jdbcType=VARCHAR},
       FILE_TYPE = #{fileType,jdbcType=VARCHAR},
-      FILE_SIZE = #{fileSize,jdbcType=INTEGER},
+      FILE_SIZE = #{fileSize,jdbcType=BIGINT},
       COMMENT = #{comment,jdbcType=VARCHAR}
     where FILE_ID = #{fileId,jdbcType=INTEGER}
   </update>

@@ -1,5 +1,4 @@
 < <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@page import="com.cloud.app.model.User"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -24,7 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">Main</li>
-                        <li class="active"><a class="ajax-link" href="indexview"><i class="glyphicon glyphicon-home"></i><span> 首页</span></a>
+                        <li class="active"><a class="ajax-link" href="index"><i class="glyphicon glyphicon-home"></i><span> 首页</span></a>
                         </li>
                         <li><a class="ajax-link" href="uploadview"><i class="glyphicon glyphicon-upload"></i><span> 上传</span></a>
                         </li>
@@ -52,10 +51,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div>
                 <ul class="breadcrumb">
                     <li>
-                        <a href="#">Home</a>
+                        <a href="index">Home</a>
                     </li>
                     <li>
-                        <a href="#">主页</a>
+                        <a href="index">主页</a>
                     </li>
                 </ul>
             </div>
@@ -76,7 +75,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <a class="btn btn-default" href="file/download" >
+                                <a class="btn btn-default" href="download" >
                                     <i class="glyphicon glyphicon-download icon-white"></i>
                                     下载
                                 </a>

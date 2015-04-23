@@ -12,19 +12,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloud.app.model.HDFS;
 import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
+import com.cloud.framwork.dao.HDFSMapper;
 import com.cloud.framwork.dao.UserFileMapper;
 import com.cloud.framwork.dao.UserMapper;
 import com.cloud.util.HashValue;
 @Service("fileService")
 public class FileServiceImpl implements IFileService{
 	@Resource
-	UserFile userFile;
-	@Resource
 	HashValue hashValue;
+	
+	@Resource
+	HDFS hdfs;
+	
+	@Resource
+	HDFSMapper hdfsDao;
+	
+	@Resource
+	UserFile userFile;
+	
 	@Resource  
     private UserFileMapper userFileDao; 
+	
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
 		try {  
 			String hash = hashValue.getHashValue(file, 32);
@@ -33,7 +44,7 @@ public class FileServiceImpl implements IFileService{
 		    String rootPath = request.getSession().getServletContext()  
 		        .getRealPath(""); 
             //set the file path 
-            String path =rootPath+hash;  
+            String path ="/Users/cJack1913/Downloads/test/"+hash+file.getOriginalFilename();  
             System.out.println(path);
             //save file
             File localFile = new File(path);  
@@ -43,6 +54,14 @@ public class FileServiceImpl implements IFileService{
 			userFile.setFileName(file.getOriginalFilename());
             userFile.setFileMd5(hash);
             userFileDao.myinsert(userFile);
+            
+            hdfs.setFileMd5(hash);
+            hdfs.setFileSize(file.getSize());
+            hdfs.setFileType(file.getContentType());
+            hdfs.setFileUrl(path);
+            
+            hdfsDao.insert(hdfs);
+            
         } catch (Exception e) {  
             e.printStackTrace();  
             System.out.println("上传出错");  

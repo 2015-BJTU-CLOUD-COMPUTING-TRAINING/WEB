@@ -32,7 +32,7 @@ import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
 
 @Controller
-@RequestMapping("/file")
+
 public class FileController {
 
 	
@@ -40,7 +40,7 @@ public class FileController {
 	IFileService fileService;
 	
 	@RequestMapping("/upload")
-	public String addUsers(@RequestParam("file") MultipartFile[] files,
+	public String upload(@RequestParam("file") MultipartFile[] files,
 			HttpServletRequest request) {
 		User user=(User) request.getSession().getAttribute("currentUser");
 		for (MultipartFile file : files) {
@@ -57,7 +57,7 @@ public class FileController {
 		return "upload";
 	}
 	
-	@RequestMapping(value = "/download")  
+	@RequestMapping("/download")  
 	  public ModelAndView download(HttpServletRequest request,  
 	      HttpServletResponse response) throws Exception {  
 	  
@@ -66,5 +66,11 @@ public class FileController {
 	    String contentType = "application/octet-stream";  
 	    fileService.getFile(request, response, storeName, contentType);  
 	    return null;  
-	  }  
+	  }
+	
+	@RequestMapping("/index")
+	public String getAllFile(){
+		System.out.println("--------------------------index--------------------------");
+		return "index";
+	}
 }

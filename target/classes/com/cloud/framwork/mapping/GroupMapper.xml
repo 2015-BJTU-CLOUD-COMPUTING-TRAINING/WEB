@@ -14,8 +14,8 @@
     <result column="GROUP_DEPUTY1_ID" property="groupDeputy1Id" jdbcType="INTEGER" />
     <result column="GROUP_DEPUTY2_ID" property="groupDeputy2Id" jdbcType="INTEGER" />
     <result column="GROUP_DEPUTY3_ID" property="groupDeputy3Id" jdbcType="INTEGER" />
-    <result column="TOTAL_VOLUME" property="totalVolume" jdbcType="INTEGER" />
-    <result column="EXISTED_VOLUME" property="existedVolume" jdbcType="INTEGER" />
+    <result column="TOTAL_VOLUME" property="totalVolume" jdbcType="BIGINT" />
+    <result column="EXISTED_VOLUME" property="existedVolume" jdbcType="BIGINT" />
     <result column="GROUP_TIME_BUILD" property="groupTimeBuild" jdbcType="TIMESTAMP" />
     <result column="COMMENT" property="comment" jdbcType="VARCHAR" />
   </resultMap>
@@ -41,7 +41,7 @@
       GROUP_TIME_BUILD, COMMENT)
     values (#{groupName,jdbcType=VARCHAR}, #{groupTheme,jdbcType=VARCHAR}, #{groupBuilderId,jdbcType=INTEGER}, 
       #{groupLeaderId,jdbcType=INTEGER}, #{groupDeputy1Id,jdbcType=INTEGER}, #{groupDeputy2Id,jdbcType=INTEGER}, 
-      #{groupDeputy3Id,jdbcType=INTEGER}, #{totalVolume,jdbcType=INTEGER}, #{existedVolume,jdbcType=INTEGER}, 
+      #{groupDeputy3Id,jdbcType=INTEGER}, #{totalVolume,jdbcType=BIGINT}, #{existedVolume,jdbcType=BIGINT}, 
       #{groupTimeBuild,jdbcType=TIMESTAMP}, #{comment,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cloud.app.model.Group" >
@@ -57,8 +57,8 @@
       GROUP_DEPUTY1_ID = #{groupDeputy1Id,jdbcType=INTEGER},
       GROUP_DEPUTY2_ID = #{groupDeputy2Id,jdbcType=INTEGER},
       GROUP_DEPUTY3_ID = #{groupDeputy3Id,jdbcType=INTEGER},
-      TOTAL_VOLUME = #{totalVolume,jdbcType=INTEGER},
-      EXISTED_VOLUME = #{existedVolume,jdbcType=INTEGER},
+      TOTAL_VOLUME = #{totalVolume,jdbcType=BIGINT},
+      EXISTED_VOLUME = #{existedVolume,jdbcType=BIGINT},
       GROUP_TIME_BUILD = #{groupTimeBuild,jdbcType=TIMESTAMP},
       COMMENT = #{comment,jdbcType=VARCHAR}
     where GROUP_ID = #{groupId,jdbcType=INTEGER}

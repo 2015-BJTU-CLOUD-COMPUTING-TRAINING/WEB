@@ -56,7 +56,7 @@ public class UserController {
 		System.out.println("++++++++++++++++++++++++++" + user.getUserId());
 
 		request.getSession().setAttribute("currentUser", user);
-		return "index";
+		return "/index";
 	}
 
 	@RequestMapping("/login")
@@ -78,7 +78,7 @@ public class UserController {
 		}
 		// 如果有账号密码...
 		if (session.getAttribute("currentUser") != null) {
-			return "index";
+			return "/index";
 		} else if (user.getUserName() != null) {
 
 			User userresult = this.userService.getUserByNameAndPassword(user);
@@ -87,7 +87,7 @@ public class UserController {
 				userresult.setPassword("");
 				session.setAttribute("currentUser", userresult);
 				
-				return "index";
+				return "/index";
 			} else
 				model.addAttribute("wrong", "账号或密码错误!");
 			return "login";
