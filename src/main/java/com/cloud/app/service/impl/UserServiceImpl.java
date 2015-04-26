@@ -8,7 +8,7 @@ import com.cloud.app.model.User;
 import com.cloud.app.service.IUserService;
 import com.cloud.framwork.dao.UserMapper;
 
-@Service("userService") 
+@Service("userSerivice")
 public class UserServiceImpl implements IUserService{
 	@Resource  
     private UserMapper userDao; 

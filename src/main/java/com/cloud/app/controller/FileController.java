@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -28,11 +29,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cloud.app.model.User;
+import com.cloud.app.model.UserAllFile;
 import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
 
 @Controller
-
 public class FileController {
 
 	
@@ -54,23 +55,38 @@ public class FileController {
 				fileService.saveFile(file, request,user.getUserId());
 			}
 		}
-		return "upload";
+		return "redirect:/index";
 	}
 	
 	@RequestMapping("/download")  
 	  public ModelAndView download(HttpServletRequest request,  
 	      HttpServletResponse response) throws Exception {  
-	  
-//			String storeName = "Spring3.xAPI_zh.chm";  
-	    String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
-	    String contentType = "application/octet-stream";  
-	    fileService.getFile(request, response, storeName, contentType);  
+	  System.out.println("--------------------------download--------------------------");
+//	    String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
+//	    String contentType = "application/octet-stream";  
+//	    fileService.getFile(request, response, storeName, contentType);  
 	    return null;  
 	  }
 	
 	@RequestMapping("/index")
-	public String getAllFile(){
+	public String getAllFile(HttpSession session,Model model){
 		System.out.println("--------------------------index--------------------------");
+		// 打印session
+				Enumeration<String> e = session.getAttributeNames();
+				while (e.hasMoreElements()) {
+					String s = e.nextElement();
+					System.out.println("index session:" + s + " == "
+							+ session.getAttribute(s));
+				}
+				// 打印model
+				Map<String, Object> modelMap = model.asMap();
+				for (Object modelKey : modelMap.keySet()) {
+					Object modelValue = modelMap.get(modelKey);
+					System.out.println("index model:" + modelKey + " -- " + modelValue);
+				}
+		User user = (User) session.getAttribute("currentUser");
+		List<UserAllFile> userAllFile = fileService.getAllFileByUserID(user.getUserId());
+		model.addAttribute("userAllFile", userAllFile);
 		return "index";
 	}
 }

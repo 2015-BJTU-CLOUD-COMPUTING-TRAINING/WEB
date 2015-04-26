@@ -13,41 +13,6 @@
 
     <link href="/cloud/css/charisma-app.css" rel="stylesheet">
  
-    <style>
-        body {
-            padding-top: 50px;
-            padding-bottom: 40px;
-            color: #5a5a5a;
-        }
-        .sidebar-nav{
-            margin-top: 70px;
-        }
-
-
-       .sidebar-nav div li a{
-           height: 60px;
-       }
-        .sidebar-nav div li a i{
-            font-size: 25px;
-
-        }
-        .sidebar-nav div li a span{
-            font-size: 25px;
-        }
-
-        
-        #fileTable thead tr th{
-            text-align: center;
-            vertical-align: middle;
-
-        }
-        #fileTable tbody tr td{
-            text-align: center;
-            vertical-align: middle;
-        }
-
-
-    </style>
 
 </head>
 <body>
@@ -64,12 +29,12 @@
             <a class="navbar-brand" href="#">一保七网盘</a>
         </div>
 		<%  User user = (User)request.getSession().getAttribute("currentUser");
-			String name = user.getUserName();
+			String Nickname = user.getUserNickname();
 		%>
         <!-- user dropdown starts -->
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"><%=name%></span>
+                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"><%=Nickname%></span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">

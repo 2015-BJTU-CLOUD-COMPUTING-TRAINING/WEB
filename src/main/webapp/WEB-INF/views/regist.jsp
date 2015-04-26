@@ -83,8 +83,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <div class="col-lg-5">
                             <input type="password" class="form-control" name="confirmPassword" placeholder="确认密码" />
                         </div>
-                    </div>
-
+                    </div> 
                     <div class="form-group">
                         <label class="col-lg-3 control-label">学号</label>
                         <div class="col-lg-5">
@@ -109,16 +108,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   
 
 
-                    <div class="form-group">
+                 <div class="form-group">
                         <label class="col-lg-3 control-label" id="captchaOperation"></label>
                         <div class="col-lg-2">
                             <input type="text" class="form-control" name="captcha" placeholder="验证码"/>
                         </div>
-                    </div>
+                    </div> 
 
                     <div class="form-group">
                         <div class="col-lg-9 col-lg-offset-3">
-                            <button type="submit" class="btn btn-primary" value="Submit">注册</button>
+                            <button type="submit" class="btn btn-primary" name="signup" value="Sign up">注册</button>
                             <button type="button" class="btn btn-info" id="validateBtn">手动验证</button>
                             <button type="button" class="btn btn-info" id="resetBtn">重置</button>
                         </div>
@@ -129,6 +128,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- :form -->
     </div>
 </div>
+  
 <script type="text/javascript">
     $(document).ready(function() {
         // Generate a simple captcha
@@ -215,7 +215,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             message: 'The password cannot be the same as username'
                         }
                     }
-                }, */
+                }, 
                 bjtuNumber:{
                     validators:{
                         between:{
@@ -235,7 +235,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             message: 'The birthday is not valid'
                         }
                     }
-                }/* ,
+                } ,
 
                 captcha: {
                     validators: {

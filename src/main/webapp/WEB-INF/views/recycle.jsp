@@ -7,7 +7,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html>
 <head>
-   
+   <style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 40px;
+            color: #5a5a5a;
+        }
+        .sidebar-nav{
+            margin-top: 70px;
+        }
+
+
+        .sidebar-nav div li a{
+            height: 60px;
+        }
+        .sidebar-nav div li a i{
+            font-size: 25px;
+
+        }
+        .sidebar-nav div li a span{
+            font-size: 25px;
+        }
+
+
+        #fileTable thead tr th{
+            text-align: center;
+            vertical-align: middle;
+
+        }
+        #fileTable tbody tr td{
+            text-align: center;
+            vertical-align: middle;
+        }
+
+
+    </style>
 
 </head>
 

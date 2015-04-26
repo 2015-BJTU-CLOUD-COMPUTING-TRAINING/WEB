@@ -4,15 +4,19 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloud.app.model.HDFS;
+import com.cloud.app.model.UserAllFile;
 import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
 import com.cloud.framwork.dao.HDFSMapper;
@@ -21,19 +25,19 @@ import com.cloud.framwork.dao.UserMapper;
 import com.cloud.util.HashValue;
 @Service("fileService")
 public class FileServiceImpl implements IFileService{
-	@Resource
+	@Autowired
 	HashValue hashValue;
 	
-	@Resource
+	@Autowired
 	HDFS hdfs;
 	
-	@Resource
+	@Autowired
 	HDFSMapper hdfsDao;
 	
-	@Resource
+	@Autowired
 	UserFile userFile;
 	
-	@Resource  
+	@Autowired
     private UserFileMapper userFileDao; 
 	
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
@@ -45,22 +49,27 @@ public class FileServiceImpl implements IFileService{
 		        .getRealPath(""); 
             //set the file path 
             String path ="/Users/cJack1913/Downloads/test/"+hash+file.getOriginalFilename();  
-            System.out.println(path);
             //save file
             File localFile = new File(path);  
             file.transferTo(localFile);  
-            
-            userFile.setUserId(userId);
-			userFile.setFileName(file.getOriginalFilename());
-            userFile.setFileMd5(hash);
-            userFileDao.myinsert(userFile);
-            
+            System.out.println("filepath"+path);
+            System.out.println(new Date(localFile.lastModified()));
             hdfs.setFileMd5(hash);
             hdfs.setFileSize(file.getSize());
             hdfs.setFileType(file.getContentType());
             hdfs.setFileUrl(path);
-            
             hdfsDao.insert(hdfs);
+            
+            userFile.setFileId(hdfs.getFileId());
+            userFile.setUserId(userId);
+			userFile.setFileName(file.getOriginalFilename());
+            userFileDao.myinsert(userFile);
+           /*
+            * 此处还查hash
+            * 回滚
+            * 
+            */
+            
             
         } catch (Exception e) {  
             e.printStackTrace();  
@@ -113,6 +122,14 @@ public class FileServiceImpl implements IFileService{
 		 
 		 
 	 }
+
+	@Override
+	public List<UserAllFile> getAllFileByUserID(Integer userId) {
+		// TODO Auto-generated method stub
+		
+		List<UserAllFile> userAllFile=userFileDao.selectAllByUserId(userId);
+		return userAllFile;
+	}
 
 	
 

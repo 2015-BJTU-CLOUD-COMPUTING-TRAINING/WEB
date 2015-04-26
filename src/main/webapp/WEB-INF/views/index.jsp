@@ -1,4 +1,5 @@
-< <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -6,6 +7,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 40px;
+            color: #5a5a5a;
+        }
+        .sidebar-nav{
+            margin-top: 70px;
+        }
+
+
+       .sidebar-nav div li a{
+           height: 60px;
+       }
+        .sidebar-nav div li a i{
+            font-size: 25px;
+
+        }
+        .sidebar-nav div li a span{
+            font-size: 25px;
+        }
+
+        
+        #fileTable thead tr th{
+            text-align: center;
+            vertical-align: middle;
+
+        }
+        #fileTable tbody tr td{
+            text-align: center;
+            vertical-align: middle;
+        }
+
+
+    </style>
 </head>
 
 <body >
@@ -75,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <a class="btn btn-default" href="download" >
+                                <a class="btn btn-default"  onclick="chk('download')" >
                                     <i class="glyphicon glyphicon-download icon-white"></i>
                                     下载
                                 </a>
@@ -97,101 +133,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
                                 <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox"></label></div></th>
+                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)"></label></div></th>
                                     <th>文件名</th>
                                     <th>大小</th>
                                     <th>修改日期</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                <c:forEach items="${requestScope.userAllFile }" var="file">
+								<tr>
+									<td><div class="checkbox"><label><input type="checkbox" name="fileId" value="${file.fileId}"></label></div></td>
+									<td>${file.fileName}</td>
+									<td>${file.hdfs.fileSize}</td>
+									<td>${file.fileLastmodified}</td>
+								</tr>
+								</c:forEach>
+			
+                             
 
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> java从入门到精通</span></td>
-                                    <td >30Mb</td>
-                                    <td>2017/08/23</td>
-
-
-                                </tr>
-
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Andro Christopher</span></td>
-                                    <td class="center">1kb</td>
-                                    <td class="center">2015/08/23</td>
-
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Jhon Doe</span></td>
-                                    <td class="center">5kb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">如何和傻逼相处</span></td>
-                                    <td class="center">10Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">哈哈哈</span></td>
-                                    <td class="center">11Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">嘻嘻嘻</span></td>
-                                    <td class="center">20Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">傻逼是怎样炼成的</span></td>
-                                    <td class="center">30Mb</td>
-                                    <td class="center">2016/03/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> java从入门到精通</span></td>
-                                    <td >30Mb</td>
-                                    <td>2017/08/23</td>
-
-
-                                </tr>
-
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Andro Christopher</span></td>
-                                    <td class="center">1kb</td>
-                                    <td class="center">2015/08/23</td>
-
-
-
-                                </tr>
-
-
-                                </tbody>
+                                </tbody> 
                             </table>
+                            <form name="download" action="download">
+                            	<input type="hidden" name="fileIds" value="">
+                            	
+                            </form>
                             <ul class="pagination pagination-centered">
                                 <li><a href="#">Prev</a></li>
                                 <li class="active">
@@ -208,20 +173,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                 </div>
             </div><!--/row-->
-
-
-
-
         </div>
     </div>
 </div>
+<script type="text/javascript">
+function chk(type){ 
+	//选择所有name="'fileId'"的对象，返回数组 
+	var obj=document.getElementsByName('fileId'); 
+	var down
+	
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	} 
+	if(s=='') {
+	alert('你还没有选择任何内容!'); 
+	}
+	alert(type);
+	} 
 
+function CheckAll(flag)
+{
+	var obj=document.getElementsByName('fileId');
+    for (var i = 0; i < obj.length ; i++ )
+        if (obj[i].type.toLowerCase() == 'checkbox')
+        	obj[i].checked = flag;
+}
 
-
+</script>
 </body>
 </html>
-
-
-
-
-

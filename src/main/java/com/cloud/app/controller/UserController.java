@@ -3,16 +3,14 @@ package com.cloud.app.controller;
 import java.util.Enumeration;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cloud.app.model.User;
 import com.cloud.app.service.IUserService;
@@ -20,7 +18,8 @@ import com.cloud.app.service.IUserService;
 @Controller
 public class UserController {
 
-	@Resource
+	@Autowired
+	@Qualifier("userSerivice")
 	private IUserService userService;
 
 	@RequestMapping("/")
@@ -46,17 +45,20 @@ public class UserController {
 	}
 
 	@RequestMapping("/regists")
-	public String regist(User user, HttpServletRequest request, Model model) {
-
-		System.out.println("+++++++++++++++++++" + user.getBirthday());
-		System.out.println("++++++++++++++++++++++++++" + user.getUserId());
-		int userid = this.userService.save(user);
-		System.out.println("+++++++++++++++++++" + user.getBirthday());
-		System.out.println("++++++++++++++++++++++++++" + userid);
-		System.out.println("++++++++++++++++++++++++++" + user.getUserId());
-
-		request.getSession().setAttribute("currentUser", user);
-		return "/index";
+	public String regist(User user, HttpServletRequest request,Model model) {
+		System.out.println("----------------regist------------");
+		//print regist information
+		System.out.println(user);
+		//save user
+		this.userService.save(user);
+		//print again
+		System.out.println(user);
+		//get the currentuser
+		User currentUser = userService.getUserById(user.getUserId());
+		//print currentuser
+		System.out.println(currentUser);
+		request.getSession().setAttribute("currentUser", currentUser);
+		return "redirect:/index";
 	}
 
 	@RequestMapping("/login")
@@ -78,16 +80,16 @@ public class UserController {
 		}
 		// 如果有账号密码...
 		if (session.getAttribute("currentUser") != null) {
-			return "/index";
+			return "redirect:/index";
 		} else if (user.getUserName() != null) {
 
 			User userresult = this.userService.getUserByNameAndPassword(user);
-
 			if (userresult != null) {
 				userresult.setPassword("");
+				System.out.println(userresult);
 				session.setAttribute("currentUser", userresult);
 				
-				return "/index";
+				return "redirect:/index";
 			} else
 				model.addAttribute("wrong", "账号或密码错误!");
 			return "login";

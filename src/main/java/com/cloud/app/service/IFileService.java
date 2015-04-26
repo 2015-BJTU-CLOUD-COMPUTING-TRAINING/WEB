@@ -1,9 +1,14 @@
 package com.cloud.app.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import com.cloud.app.model.UserAllFile;
+import com.cloud.app.model.UserFile;
 
 public interface IFileService {
 	//save File
@@ -12,5 +17,6 @@ public interface IFileService {
 	 void getFile (HttpServletRequest request,  
 		      HttpServletResponse response, String fileName, String fileContentType
 		       ) throws Exception;
-
+	 List<UserAllFile> getAllFileByUserID(Integer userId);
+	 
 }
