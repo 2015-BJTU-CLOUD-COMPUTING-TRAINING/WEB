@@ -70,7 +70,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <li class="nav-header hidden-md">联系人/组</li>
 
-                        <li><a class="ajax-link" href="friendsview"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
+                        <li><a class="ajax-link" href="showAllFriends"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
                         </li>
                         <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
                         </li>

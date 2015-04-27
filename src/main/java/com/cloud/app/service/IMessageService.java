@@ -5,13 +5,10 @@ import java.util.List;
 import com.cloud.app.model.Message;
 import com.cloud.app.model.User;
 
-public interface IUserService {
+public interface IMessageService {
 	
-	 User getUserById(Integer userId);
 	
-	 int save(User user);
+	int Addfriendmessage(Integer userid,Integer friendid);
 	
-	 User getUserByNameAndPassword(User user);
-	 
 	 List<Message> getAllMessages(Integer userId);
 }

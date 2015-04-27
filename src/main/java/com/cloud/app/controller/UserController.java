@@ -1,6 +1,7 @@
 package com.cloud.app.controller;
 
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.cloud.app.model.Message;
 import com.cloud.app.model.User;
+import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IUserService;
 
 @Controller
@@ -21,6 +24,10 @@ public class UserController {
 	@Autowired
 	@Qualifier("userSerivice")
 	private IUserService userService;
+	
+	@Autowired
+	@Qualifier("messageService")
+	private IMessageService messageService;
 
 	@RequestMapping("/")
 	public String welcome() {
@@ -40,6 +47,7 @@ public class UserController {
 		System.out.println(user);
 		//get the currentuser
 		User currentUser = userService.getUserById(user.getUserId());
+		currentUser.setPassword("");
 		//print currentuser
 		System.out.println(currentUser);
 		request.getSession().setAttribute("currentUser", currentUser);
@@ -65,6 +73,10 @@ public class UserController {
 		}
 		// 如果有账号密码...
 		if (session.getAttribute("currentUser") != null) {
+			
+			User currentuser=(User)session.getAttribute("currentUser");
+			List<Message> messages = messageService.getAllMessages(currentuser.getUserId());
+			session.setAttribute("messages", messages);
 			return "redirect:/index";
 		} else if (user.getUserName() != null) {
 
@@ -74,6 +86,8 @@ public class UserController {
 				System.out.println(userresult);
 				session.setAttribute("currentUser", userresult);
 				
+				List<Message> messages = messageService.getAllMessages(userresult.getUserId());
+				session.setAttribute("messages", messages);
 				return "redirect:/index";
 			} else
 				model.addAttribute("wrong", "账号或密码错误!");
@@ -96,7 +110,7 @@ public class UserController {
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		session.removeAttribute("currentUser");
-		
+		session.removeAttribute("messages");
 		System.out
 				.println("--------------------------logout--------------------------");
 		// 打印session
