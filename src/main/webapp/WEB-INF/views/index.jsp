@@ -110,16 +110,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <a href="#" class="btn btn-close btn-round btn-default"><i
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
+                             <form name="OPform" id="OPform"  action="download" method="post">
+                            	<input id="fileIds" type="hidden" name="fileIds" value="?">
+                            </form>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <a class="btn btn-default"  onclick="chk('download')" >
+                                <a class="btn btn-default"  onclick="chk('download')">
                                     <i class="glyphicon glyphicon-download icon-white"></i>
                                     下载
                                 </a>
-                                <a class="btn btn-default" href="#">
+                                <a class="btn btn-default" onclick="chk('share')">
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     分享
                                 </a>
-                                <a class="btn btn-default" href="#">
+                                <a class="btn btn-default" onclick="chk('delete')"  >
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除
                                 </a>
@@ -153,10 +156,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                                 </tbody> 
                             </table>
-                            <form name="download" action="download">
-                            	<input type="hidden" name="fileIds" value="">
-                            	
-                            </form>
+                           
                             <ul class="pagination pagination-centered">
                                 <li><a href="#">Prev</a></li>
                                 <li class="active">
@@ -178,20 +178,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <script type="text/javascript">
 function chk(type){ 
-	//选择所有name="'fileId'"的对象，返回数组 
+	 //选择所有name="'fileId'"的对象，返回数组 
 	var obj=document.getElementsByName('fileId'); 
-	var down
-	
 	var s=''; 
 	for(var i=0; i<obj.length; i++){ 
 	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
-	} 
+	}  
+	
 	if(s=='') {
 	alert('你还没有选择任何内容!'); 
-	}
-	alert(type);
+	}else{ 
+		document.getElementById('fileIds').value=s;
+		document.getElementById('OPform').action=type;
+		document.getElementById('OPform').submit();
 	} 
-
+}
 function CheckAll(flag)
 {
 	var obj=document.getElementsByName('fileId');

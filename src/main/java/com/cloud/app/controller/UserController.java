@@ -23,24 +23,9 @@ public class UserController {
 	private IUserService userService;
 
 	@RequestMapping("/")
-	public String welcome(HttpServletRequest request, Model model) {
-		System.out
-				.println("--------------------------Welcome--------------------------");
-		// 打印session
-		HttpSession session=request.getSession();
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("welcome session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("welcome model:" + modelKey + " -- "
-					+ modelValue);
-		}
+	public String welcome() {
+		System.out.println("--------------------------Welcome--------------------------");
+
 		return "redirect:/login";
 	}
 

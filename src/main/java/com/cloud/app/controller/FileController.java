@@ -36,57 +36,87 @@ import com.cloud.app.service.IFileService;
 @Controller
 public class FileController {
 
-	
 	@Resource
 	IFileService fileService;
-	
+
+	@RequestMapping("/index")
+	public String getAllFile(HttpSession session, Model model) {
+		System.out
+				.println("--------------------------index--------------------------");
+		// 打印session
+		Enumeration<String> e = session.getAttributeNames();
+		while (e.hasMoreElements()) {
+			String s = e.nextElement();
+			System.out.println("index session:" + s + " == "
+					+ session.getAttribute(s));
+		}
+		// 打印model
+		Map<String, Object> modelMap = model.asMap();
+		for (Object modelKey : modelMap.keySet()) {
+			Object modelValue = modelMap.get(modelKey);
+			System.out.println("index model:" + modelKey + " -- " + modelValue);
+		}
+		User user = (User) session.getAttribute("currentUser");
+		List<UserAllFile> userAllFile = fileService.getAllFileByUserID(user
+				.getUserId());
+		model.addAttribute("userAllFile", userAllFile);
+		return "index";
+	}
+
 	@RequestMapping("/upload")
 	public String upload(@RequestParam("file") MultipartFile[] files,
 			HttpServletRequest request) {
-		User user=(User) request.getSession().getAttribute("currentUser");
+		User user = (User) request.getSession().getAttribute("currentUser");
 		for (MultipartFile file : files) {
-			
-			System.out.println("文件类型："+file.getContentType());
-		      System.out.println("文件名称："+file.getOriginalFilename());
-		      System.out.println("文件大小:"+file.getSize());
-		      System.out.println(".................................................");
+
+			System.out.println("文件类型：" + file.getContentType());
+			System.out.println("文件名称：" + file.getOriginalFilename());
+			System.out.println("文件大小:" + file.getSize());
+			System.out
+					.println(".................................................");
 			if (!file.isEmpty()) {
-				//save file
-				fileService.saveFile(file, request,user.getUserId());
+				// save file
+				fileService.saveFile(file, request, user.getUserId());
 			}
 		}
 		return "redirect:/index";
 	}
-	
-	@RequestMapping("/download")  
-	  public ModelAndView download(HttpServletRequest request,  
-	      HttpServletResponse response) throws Exception {  
-	  System.out.println("--------------------------download--------------------------");
-//	    String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
-//	    String contentType = "application/octet-stream";  
-//	    fileService.getFile(request, response, storeName, contentType);  
-	    return null;  
-	  }
-	
-	@RequestMapping("/index")
-	public String getAllFile(HttpSession session,Model model){
-		System.out.println("--------------------------index--------------------------");
-		// 打印session
-				Enumeration<String> e = session.getAttributeNames();
-				while (e.hasMoreElements()) {
-					String s = e.nextElement();
-					System.out.println("index session:" + s + " == "
-							+ session.getAttribute(s));
-				}
-				// 打印model
-				Map<String, Object> modelMap = model.asMap();
-				for (Object modelKey : modelMap.keySet()) {
-					Object modelValue = modelMap.get(modelKey);
-					System.out.println("index model:" + modelKey + " -- " + modelValue);
-				}
-		User user = (User) session.getAttribute("currentUser");
-		List<UserAllFile> userAllFile = fileService.getAllFileByUserID(user.getUserId());
-		model.addAttribute("userAllFile", userAllFile);
-		return "index";
+
+	@RequestMapping("/download")
+	public String download(String fileIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out
+				.println("--------------------------download--------------------------");
+		System.out.println(fileIds);
+		System.out.println(request.getSession().getAttribute("currentUser"));
+		fileService.getFile(request, response, fileIds);
+		return null;
 	}
+
+	@RequestMapping("/delete")
+	public String delete(String fileIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out
+				.println("--------------------------delete--------------------------");
+		System.out.println(fileIds);
+		System.out.println(request.getSession().getAttribute("currentUser"));
+		// String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
+		// String contentType = "application/octet-stream";
+		// fileService.getFile(request, response, storeName, contentType);
+		return "redirect:/index";
+	}
+
+	@RequestMapping("/share")
+	public String share(String fileIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out
+				.println("--------------------------share--------------------------");
+		System.out.println(fileIds);
+		System.out.println(request.getSession().getAttribute("currentUser"));
+		// String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
+		// String contentType = "application/octet-stream";
+		// fileService.getFile(request, response, storeName, contentType);
+		return "redirect:/index";
+	}
+
 }
