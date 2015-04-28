@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cloud.app.model.Message;
+import com.cloud.app.model.Messages;
 import com.cloud.app.service.IMessageService;
 import com.cloud.framwork.dao.MessageMapper;
 @Service("messageService")
@@ -29,9 +30,9 @@ public class MessageServiceImpl implements IMessageService {
 		return messageDao.Addmessage(message);
 	} 
 	@Override
-	public List<Message> getAllMessages(Integer userId) {
+	public List<Messages> getAllMessages(Integer userId) {
 		// TODO Auto-generated method stub
-		List<Message> messages = messageDao.getAllMessages(userId);
+		List<Messages> messages = messageDao.getAllMessages(userId);
 		return messages;
 	}
 

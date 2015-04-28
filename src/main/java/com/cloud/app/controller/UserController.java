@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cloud.app.model.Message;
+import com.cloud.app.model.Messages;
 import com.cloud.app.model.User;
 import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IUserService;
@@ -75,8 +76,7 @@ public class UserController {
 		if (session.getAttribute("currentUser") != null) {
 			
 			User currentuser=(User)session.getAttribute("currentUser");
-			List<Message> messages = messageService.getAllMessages(currentuser.getUserId());
-			session.setAttribute("messages", messages);
+			session.setAttribute("messages", messageService.getAllMessages(currentuser.getUserId()));
 			return "redirect:/index";
 		} else if (user.getUserName() != null) {
 
@@ -86,8 +86,7 @@ public class UserController {
 				System.out.println(userresult);
 				session.setAttribute("currentUser", userresult);
 				
-				List<Message> messages = messageService.getAllMessages(userresult.getUserId());
-				session.setAttribute("messages", messages);
+				session.setAttribute("messages", messageService.getAllMessages(userresult.getUserId()));
 				return "redirect:/index";
 			} else
 				model.addAttribute("wrong", "账号或密码错误!");

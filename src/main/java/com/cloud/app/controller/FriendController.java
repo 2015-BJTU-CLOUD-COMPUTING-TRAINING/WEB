@@ -29,13 +29,16 @@ public class FriendController {
 	
 	@Autowired
 	private IMessageService messageService;
+	
+	@Autowired
+	private IUserService userSerivce;
 
 
 
 	@RequestMapping("/showAllFriends")
-	public String getAllFile(HttpSession session, Model model) {
+	public String showAllFriends(HttpSession session, Model model) {
 		System.out
-				.println("--------------------------getAllFile--------------------------");
+				.println("--------------------------showAllFriends--------------------------");
 		// 打印session
 		Enumeration<String> e = session.getAttributeNames();
 		while (e.hasMoreElements()) {
@@ -54,11 +57,12 @@ public class FriendController {
 		List<User> allFriends = friendService.Showfriend(user
 				.getUserId());
 		model.addAttribute("allFriends", allFriends);
+		session.setAttribute("messages", messageService.getAllMessages(user.getUserId()));
 		return "friends";
 	}
 	
 	@RequestMapping("/selectUser")
-	public String selectUser(HttpSession session, Model model) {
+	public String selectUser(@RequestParam("userid") Integer userid,HttpSession session, Model model) {
 		System.out
 				.println("--------------------------getAllFile--------------------------");
 		// 打印session
@@ -74,7 +78,7 @@ public class FriendController {
 			Object modelValue = modelMap.get(modelKey);
 			System.out.println("index model:" + modelKey + " -- " + modelValue);
 		}
-		
+		User user = userSerivce.getUserById(userid);
 		return "friends";
 	}
 	

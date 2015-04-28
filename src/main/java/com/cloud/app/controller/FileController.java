@@ -83,26 +83,24 @@ public class FileController {
 	}
 
 	@RequestMapping("/download")
-	public String download(String fileIds, HttpServletRequest request,
+	public String download(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out
 				.println("--------------------------download--------------------------");
-		System.out.println(fileIds);
+		System.out.println(uploadIds);
 		System.out.println(request.getSession().getAttribute("currentUser"));
-		fileService.getFile(request, response, fileIds);
+		fileService.getFile(request, response, uploadIds);
 		return null;
 	}
 
 	@RequestMapping("/delete")
-	public String delete(String fileIds, HttpServletRequest request,
+	public String delete(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out
 				.println("--------------------------delete--------------------------");
-		System.out.println(fileIds);
+		System.out.println(uploadIds);
 		System.out.println(request.getSession().getAttribute("currentUser"));
-		// String storeName="demoUpload2班-14126101-胡志伟-外文库-MeTeL-49.key";
-		// String contentType = "application/octet-stream";
-		// fileService.getFile(request, response, storeName, contentType);
+		fileService.deleteFile(uploadIds);
 		return "redirect:/index";
 	}
 

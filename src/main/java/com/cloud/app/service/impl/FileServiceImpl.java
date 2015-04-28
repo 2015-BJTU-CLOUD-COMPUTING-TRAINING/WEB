@@ -49,6 +49,7 @@ public class FileServiceImpl implements IFileService{
 	@Autowired
     private UserFileMapper userFileDao; 
 	
+	@Override
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
 		try {  
 			String hash = hashValue.getHashValue(file, 32);
@@ -88,8 +89,9 @@ public class FileServiceImpl implements IFileService{
 		
 	}
 	
+	@Override
 	 public  void getFile(HttpServletRequest request,  
-		      HttpServletResponse response, String fileIds
+		      HttpServletResponse response, String uploadIds
 		       ) throws Exception {  
 		    //设置字符编码
 		 	request.setCharacterEncoding("UTF-8");
@@ -97,7 +99,7 @@ public class FileServiceImpl implements IFileService{
 		 	User user = (User) request.getSession().getAttribute("currentUser");
 		 	logger.info(JSON.toJSONString(user));
 		    //获得请求的fileId
-		 	String [] vals = fileIds.split(",");
+		 	String [] vals = uploadIds.split(",");
 		 	//下载文件路径
 		 	String downloadUrl;
 		 	//下载文件名称
@@ -107,10 +109,11 @@ public class FileServiceImpl implements IFileService{
 		    if(vals.length>1){
 		    //获得所有需要下载的文件所在路径
 		    String filesUrl[] = new String[vals.length];
+		    String filesName[] = new String[vals.length];
 		    int i=0;
-		    for(String fileId:vals){
-		    	userFile=userFileDao.selectByUserIdAndFileId(user.getUserId(), Integer.parseInt(fileId));
-		    	hdfs=hdfsDao.selectByPrimaryKey(Integer.parseInt(fileId));
+		    for(String uploadId:vals){
+		    	userFile=userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+		    	hdfs=hdfsDao.selectByPrimaryKey(userFile.getFileId());
 		    	logger.info(JSON.toJSONString(userFile));
 		    	logger.info(JSON.toJSONString(hdfs));
 		    	
@@ -121,13 +124,14 @@ public class FileServiceImpl implements IFileService{
 		    	}
 		    	//get the  path of targetfile
 		    	filesUrl[i]=hdfs.getFileUrl();
+		    	filesName[i]=userFile.getFileName();
 		    	i++;
 		    	
 		    }
 		    //设置打包文件路径
 		    downloadUrl="/Users/cJack1913/Downloads/test/"+downloadName;
 		    //打包文件
-		    zipfile.zipFile(filesUrl, downloadUrl);
+		    zipfile.zipFile(filesUrl,filesName, downloadUrl);
 		    }else{
 		    	userFile=userFileDao.selectByUserIdAndFileId(user.getUserId(), Integer.parseInt(vals[0]));
 		    	hdfs=hdfsDao.selectByPrimaryKey(Integer.parseInt(vals[0]));
@@ -162,7 +166,8 @@ public class FileServiceImpl implements IFileService{
 		 
 		    //close the IO stream
 		    bis.close();
-		    bos.flush();
+		    File zipfile = new File(downloadUrl);
+		    zipfile.delete();
 		    bos.close();  
 		    
 		    
@@ -175,6 +180,17 @@ public class FileServiceImpl implements IFileService{
 		
 		List<UserAllFile> userAllFile=userFileDao.selectAllByUserId(userId);
 		return userAllFile;
+	}
+
+	@Override
+	public int deleteFile(String uploadIds) {
+		// TODO Auto-generated method stub
+		
+		String [] vals = uploadIds.split(",");
+		for(String uploadId:vals){
+	    	userFileDao.deleteByPrimaryKey(Integer.parseInt(uploadId));
+		}
+		return 1;
 	}
 
 	

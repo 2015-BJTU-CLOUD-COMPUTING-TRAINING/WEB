@@ -15,7 +15,10 @@ public interface IFileService {
 	 void saveFile(MultipartFile file,HttpServletRequest request,Integer userId);
 	//get File
 	 void getFile (HttpServletRequest request,  
-		      HttpServletResponse response, String fileIds) throws Exception;
+		      HttpServletResponse response, String uploadIds) throws Exception;
+	 
 	 List<UserAllFile> getAllFileByUserID(Integer userId);
+	 
+	 int deleteFile(String uploadIds);
 	 
 }

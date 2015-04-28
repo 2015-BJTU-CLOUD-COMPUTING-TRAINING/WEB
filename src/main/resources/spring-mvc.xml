@@ -13,8 +13,8 @@
     <context:component-scan base-package="com.cloud.app.controller" />  
     <!--避免IE执行AJAX时，返回JSON出现下载文件 
     -->  
-   <!--  <bean id="mappingJacksonHttpMessageConverter"  
-        class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">  
+   <!-- <bean id="mappingJacksonHttpMessageConverter"  
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
         <property name="supportedMediaTypes">  
             <list>  
                 <value>text/html;charset=UTF-8</value>  
@@ -33,7 +33,7 @@
     
             </list>  
         </property>  
-    </bean>   -->
+    </bean>    -->
     <!-- 定义跳转的文件的前后缀 ，视图模式配置-->  
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->  
@@ -58,10 +58,7 @@
 	
 	<mvc:view-controller path="registview" view-name="regist"/>
 	<mvc:view-controller path="uploadview" view-name="upload"/>
-	<mvc:view-controller path="shareview" view-name="share"/>
 	<mvc:view-controller path="recycleview" view-name="recycle"/>
-	<mvc:view-controller path="friendsview" view-name="friends"/>
-	<mvc:view-controller path="indexview" view-name="index"/>
     <!--  
 		default-servlet-handler 将在 SpringMVC 上下文中定义一个 DefaultServletHttpRequestHandler,
 		它会对进入 DispatcherServlet 的请求进行筛查, 如果发现是没有经过映射的请求, 就将该请求交由 WEB 应用服务器默认的 

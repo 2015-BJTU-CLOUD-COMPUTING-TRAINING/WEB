@@ -39,11 +39,8 @@ public class UserServiceImpl implements IUserService{
 		// TODO Auto-generated method stub
 		return this.userDao.selectByNameAndPassword(user);
 	}
-	@Override
-	public List<Message> getAllMessages(Integer userId) {
-		// TODO Auto-generated method stub
-		List<Message> messages = messageDao.getAllMessages(userId);
-		return messages;
-	}
+	
+	
+	
 
 }

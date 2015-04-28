@@ -1,5 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@page import="com.cloud.app.model.User"%>
+<%@page import="com.cloud.app.model.Messages"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
@@ -9,11 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>一保七网盘</title>
     <link href="/cloud/css/bootstrap.min.css" rel="stylesheet">
-    
-
     <link href="/cloud/css/charisma-app.css" rel="stylesheet">
- 
-
 </head>
 <body>
 <nav class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -64,19 +62,31 @@
             </ul>
         </div>
         <!-- theme selector ends -->
+        <%  List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
+			Integer counts = messages.size();
+		%>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">首页</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">功能<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">您有<%=counts%>条消息待处理<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li class="dropdown-header">功能1</li>
-                        <li><a href="#">功能2</a></li>
-                        <li><a href="#">功能3</a></li>
-                        <li><a href="#">功能4</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">系统功能</li>
-                        <li><a href="#">设置</a></li>
+                    <c:if test="${empty sessionScope.messages }">
+							<li style="text-align: center">没有待处理信息</li>
+					</c:if>
+					<c:if test="${!empty sessionScope.messages }">
+                    <c:forEach items="${sessionScope.messages }" var="message">
+                    <li>
+                     <form>
+                    <input type="hidden" name="fromId" value="${message.fromId}"> 
+                    ${message.fromUser.userNickname}
+                    <c:if test="${message.messageType=='1'}">请求添加你为好友</c:if>
+                   <c:if test="${message.messageType=='3'}">邀请你加入${message.group.groupName}</c:if>
+                   <c:if test="${message.messageType=='5'}">申请加入${message.group.groupName}</c:if>
+                    </form> 
+                    </li>
+                    </c:forEach>
+					</c:if>
                     </ul>
                 </li>
                 <li><a href="#">帮助</a></li>

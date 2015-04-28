@@ -63,7 +63,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         </li>
                         <li><a class="ajax-link" href="uploadview"><i class="glyphicon glyphicon-upload"></i><span> 上传</span></a>
                         </li>
-                        <li><a class="ajax-link" href="shareview"><i class="glyphicon glyphicon-share"></i><span> 分享</span></a></li>
+                        <li><a class="ajax-link" href="shareRecord"><i class="glyphicon glyphicon-share"></i><span> 分享</span></a></li>
                         <li><a class="ajax-link" href="recycleview"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
                         </li>
 
@@ -111,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
                              <form name="OPform" id="OPform"  action="download" method="post">
-                            	<input id="fileIds" type="hidden" name="fileIds" value="?">
+                            	<input id="uploadIds" type="hidden" name="uploadIds" value="?">
                             </form>
                             <div class="pull-right" style="margin-top: -0.45%">
                                 <a class="btn btn-default"  onclick="chk('download')">
@@ -145,7 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tbody>
                                 <c:forEach items="${requestScope.userAllFile }" var="file">
 								<tr>
-									<td><div class="checkbox"><label><input type="checkbox" name="fileId" value="${file.fileId}"></label></div></td>
+									<td><div class="checkbox"><label><input type="checkbox" name="uploadId" value="${file.uploadId}"></label></div></td>
 									<td>${file.fileName}</td>
 									<td>${file.hdfs.fileSize}</td>
 									<td>${file.fileLastmodified}</td>
@@ -179,7 +179,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript">
 function chk(type){ 
 	 //选择所有name="'fileId'"的对象，返回数组 
-	var obj=document.getElementsByName('fileId'); 
+	var obj=document.getElementsByName('uploadId'); 
 	var s=''; 
 	for(var i=0; i<obj.length; i++){ 
 	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
@@ -188,14 +188,14 @@ function chk(type){
 	if(s=='') {
 	alert('你还没有选择任何内容!'); 
 	}else{ 
-		document.getElementById('fileIds').value=s;
+		document.getElementById('uploadIds').value=s;
 		document.getElementById('OPform').action=type;
 		document.getElementById('OPform').submit();
 	} 
 }
 function CheckAll(flag)
 {
-	var obj=document.getElementsByName('fileId');
+	var obj=document.getElementsByName('uploadId');
     for (var i = 0; i < obj.length ; i++ )
         if (obj[i].type.toLowerCase() == 'checkbox')
         	obj[i].checked = flag;
