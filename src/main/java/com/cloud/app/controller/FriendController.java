@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,21 +40,10 @@ public class FriendController {
 	public String showAllFriends(HttpSession session, Model model) {
 		System.out
 				.println("--------------------------showAllFriends--------------------------");
-		// 打印session
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("index session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("index model:" + modelKey + " -- " + modelValue);
-		}
-		
 		User user = (User) session.getAttribute("currentUser");
+		if(user==null){
+			return "redirect:/login";
+		}
 		List<User> allFriends = friendService.Showfriend(user
 				.getUserId());
 		model.addAttribute("allFriends", allFriends);
@@ -61,47 +51,31 @@ public class FriendController {
 		return "friends";
 	}
 	
-	@RequestMapping("/selectUser")
-	public String selectUser(@RequestParam("userid") Integer userid,HttpSession session, Model model) {
-		System.out
-				.println("--------------------------getAllFile--------------------------");
-		// 打印session
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("index session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("index model:" + modelKey + " -- " + modelValue);
-		}
+	@RequestMapping("/searchUser")
+	public String searchUser(@RequestParam("userid") Integer userid,HttpSession session,HttpServletRequest request,HttpServletResponse response, Model model) {
+		
 		User user = userSerivce.getUserById(userid);
 		return "friends";
 	}
 	
 	@RequestMapping("/addfriend")
 	public String addfriend(@RequestParam("friendId") Integer friendB,HttpSession session, Model model) {
-		System.out
-				.println("--------------------------getAllFile--------------------------");
-		// 打印session
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("index session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("index model:" + modelKey + " -- " + modelValue);
-		}
 		User user = (User) session.getAttribute("currentUser");
+		if(user==null){
+			return "redirect:/login";
+		}
 		messageService.Addfriendmessage(user.getUserId(), friendB);
-		return "friends";
+		return "redirect:/showAllFriends";
+	}
+	@RequestMapping("/deleteFriend")
+	public String deleteFriend(String friendIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out
+				.println("--------------------------delete--------------------------");
+		System.out.println(friendIds);
+		User user = (User) request.getSession().getAttribute("currentUser");
+		friendService.deleteFriend(friendIds,user.getUserId());
+		return "redirect:/showAllFriends";
 	}
 	
 }

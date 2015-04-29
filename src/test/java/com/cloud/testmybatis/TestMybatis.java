@@ -17,12 +17,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.alibaba.fastjson.JSON;
 import com.cloud.app.model.Message;
 import com.cloud.app.model.Messages;
+import com.cloud.app.model.Share;
+import com.cloud.app.model.ShareDetail;
 import com.cloud.app.model.User;
 import com.cloud.app.model.UserAllFile;
 import com.cloud.app.service.IFileService;
 import com.cloud.app.service.IFriendService;
 import com.cloud.app.service.IMessageService;
+import com.cloud.app.service.IShareService;
 import com.cloud.app.service.IUserService;
+import com.cloud.util.GetRandomString;
 
 
 @RunWith(SpringJUnit4ClassRunner.class) //表示继承了SpringJUnit4ClassRunner类
@@ -42,6 +46,12 @@ public class TestMybatis {
 	
 	@Resource
 	private IFileService fileService;
+	
+	@Resource
+	private GetRandomString getRandomString;
+	
+	@Resource
+	private IShareService shareService;
 	
 	@Test
 	public void test1(){
@@ -87,5 +97,53 @@ public class TestMybatis {
 			logger.info(JSON.toJSONString(message.getGroup()));
 		}
 	}
-
+	
+	@Test
+	public void test6(){
+		List<Messages> messages = messageService.getAllMessages(9);
+		for(Messages message:messages){
+			if(message.getMessageId()==4){
+				messageService.acceptMessage(message);
+			}
+		}
+	}
+	
+	@Test
+	public void test7(){
+		List<Messages> messages = messageService.getAllMessages(9);
+		for(Messages message:messages){
+			if(message.getMessageId()==3){
+				messageService.rejectMessage(message);
+			}
+		}
+	}
+	
+	@Test
+	public void test8(){
+		System.out.println(getRandomString.getRandomString(10));
+	}
+	
+	@Test
+	public void test9(){
+		String uploadIds="18,19,20,";
+		shareService.shareFiles(uploadIds);
+	}
+	
+	@Test
+	public void test10(){
+		
+		List<Share> shareRecords = shareService.getAllShareRecordByUserID(9);
+		for(Share shareRecord:shareRecords){
+			logger.info(JSON.toJSONString(shareRecord));
+		}
+	}
+	
+	@Test
+	public void test11(){
+		
+		List<ShareDetail> shareRecords = shareService.getAllShareDetailByMark("OJ0WVZ");
+		for(ShareDetail shareRecord:shareRecords){
+			logger.info(JSON.toJSONString(shareRecord));
+		}
+	}
 }

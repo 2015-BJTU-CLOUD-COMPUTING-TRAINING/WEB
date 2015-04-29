@@ -32,6 +32,18 @@ public class FriendServiceImpl implements IFriendService{
 		return Allfriends;
 	}
 
+
+
+	@Override
+	public int deleteFriend(String friendIds,Integer userId) {
+		// TODO Auto-generated method stub
+		String [] vals = friendIds.split(",");
+		for(String uploadId:vals){
+	    	friendDao.deleteByUserId(Integer.parseInt(uploadId), userId);
+		}
+		return 1;
+	}
+
 	
 
 

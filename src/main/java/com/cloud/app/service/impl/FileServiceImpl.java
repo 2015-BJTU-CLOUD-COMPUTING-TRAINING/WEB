@@ -95,9 +95,6 @@ public class FileServiceImpl implements IFileService{
 		       ) throws Exception {  
 		    //设置字符编码
 		 	request.setCharacterEncoding("UTF-8");
-		 	//获得当前用户
-		 	User user = (User) request.getSession().getAttribute("currentUser");
-		 	logger.info(JSON.toJSONString(user));
 		    //获得请求的fileId
 		 	String [] vals = uploadIds.split(",");
 		 	//下载文件路径
@@ -133,8 +130,8 @@ public class FileServiceImpl implements IFileService{
 		    //打包文件
 		    zipfile.zipFile(filesUrl,filesName, downloadUrl);
 		    }else{
-		    	userFile=userFileDao.selectByUserIdAndFileId(user.getUserId(), Integer.parseInt(vals[0]));
-		    	hdfs=hdfsDao.selectByPrimaryKey(Integer.parseInt(vals[0]));
+		    	userFile=userFileDao.selectByPrimaryKey(Integer.parseInt(vals[0]));
+		    	hdfs=hdfsDao.selectByPrimaryKey(userFile.getFileId());
 		    	logger.info(JSON.toJSONString(userFile));
 		    	logger.info(JSON.toJSONString(hdfs));
 		    	//设置文件路径和文件名

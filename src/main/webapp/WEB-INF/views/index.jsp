@@ -122,7 +122,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     分享
                                 </a>
-                                <a class="btn btn-default" onclick="chk('delete')"  >
+                                <a class="btn btn-default" onclick="chk('deleteFile')"  >
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除
                                 </a>
@@ -145,7 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tbody>
                                 <c:forEach items="${requestScope.userAllFile }" var="file">
 								<tr>
-									<td><div class="checkbox"><label><input type="checkbox" name="uploadId" value="${file.uploadId}"></label></div></td>
+									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${file.uploadId}"></label></div></td>
 									<td>${file.fileName}</td>
 									<td>${file.hdfs.fileSize}</td>
 									<td>${file.fileLastmodified}</td>

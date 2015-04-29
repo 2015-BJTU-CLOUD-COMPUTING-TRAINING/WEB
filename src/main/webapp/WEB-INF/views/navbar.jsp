@@ -26,13 +26,13 @@
             </button>
             <a class="navbar-brand" href="#">一保七网盘</a>
         </div>
-		<%  User user = (User)request.getSession().getAttribute("currentUser");
-			String Nickname = user.getUserNickname();
-		%>
+		
         <!-- user dropdown starts -->
+        
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                <i class="glyphicon glyphicon-user"></i><span class="hidden-sm hidden-xs"><%=Nickname%></span>
+                <i class="glyphicon glyphicon-user"></i>
+                <span class="hidden-sm hidden-xs">${sessionScope.currentUser.userNickname}</span>
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
@@ -41,6 +41,7 @@
                 <li><a href="logout">Logout</a></li>
             </ul>
         </div>
+        
         <!-- user dropdown ends -->
         <!-- theme selector starts -->
         <div class="btn-group pull-right theme-container animated tada">
@@ -62,9 +63,9 @@
             </ul>
         </div>
         <!-- theme selector ends -->
-        <%  List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
+      <%  List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
 			Integer counts = messages.size();
-		%>
+		%> 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">首页</a></li>
@@ -79,9 +80,11 @@
                     <li>
                      <form>
                     <input type="hidden" name="fromId" value="${message.fromId}"> 
+                    <input type="hidden" name="messageId" value="${message.messageId}">
                     ${message.fromUser.userNickname}
                     <c:if test="${message.messageType=='1'}">请求添加你为好友</c:if>
-                   <c:if test="${message.messageType=='3'}">邀请你加入${message.group.groupName}</c:if>
+                   <c:if test="${message.messageType=='3'}">邀请你加入${message.group.groupName}
+                   </c:if>
                    <c:if test="${message.messageType=='5'}">申请加入${message.group.groupName}</c:if>
                     </form> 
                     </li>

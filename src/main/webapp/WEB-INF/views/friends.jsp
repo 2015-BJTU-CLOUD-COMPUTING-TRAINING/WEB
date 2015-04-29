@@ -203,6 +203,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <a href="#" class="btn btn-close btn-round btn-default"><i
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
+                             <form name="OPform" id="OPform"  action="download" method="post">
+                            	<input id="friendIds" type="hidden" name="friendIds" value="?">
+                           		 </form>
                             <div class="pull-right" style="margin-top: -0.45%">
                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal" >
                                     <i class="glyphicon glyphicon-plus icon-white"></i>
@@ -237,12 +240,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         </div>
                                     </div>
                                 </div>
-
+								
                                 <a class="btn btn-default" href="#">
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     分享
                                 </a>
-                                <a class="btn btn-default" href="#">
+                                <a class="btn btn-default" onclick="chk('deleteFriend')">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除好友
                                 </a>
@@ -264,7 +267,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tbody>
 								<c:forEach items="${requestScope.allFriends }" var="friend">
                                 <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox" name="select" value="${friend.userId}"></label></div></td>
+                                    <td><div class="checkbox"><label><input type="checkbox" name=friendId value="${friend.userId}"></label></div></td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
                                     <td>${friend.userNickname}</td>
                                 </tr>
@@ -287,11 +290,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   $('#search').click(function(){
       document.getElementById('searchResult').style.display="table";
   });
-</script>
 
-<script>
+  function chk(type){ 
+		 //选择所有name="'fileId'"的对象，返回数组 
+		var obj=document.getElementsByName('friendId'); 
+		var s=''; 
+		for(var i=0; i<obj.length; i++){ 
+		if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+		}  
+		
+		if(s=='') {
+		alert('你还没有选择任何内容!'); 
+		}else{ 
+			alert(s);
+			document.getElementById('friendIds').value=s;
+			document.getElementById('OPform').action=type;
+			document.getElementById('OPform').submit();
+		} 
+	}
+  
     function selectAllOrNot(){
-        items=document.getElementsByName("select");
+        items=document.getElementsByName("friendId");
         itemAll=document.getElementById("selectAll");
         len=items.length;
         for(var i=0;i<len;i++){

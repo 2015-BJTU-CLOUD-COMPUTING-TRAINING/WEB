@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -129,76 +130,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tr>
                                     <th><div class="checkbox"><label><input type="checkbox"></label></div></th>
                                     <th>文件名</th>
-                                    <th>大小</th>
-                                    <th>修改日期</th>
+                                    <th>链接</th>
+                                    <th>分享日期</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-
+								<c:forEach items="${requestScope.shareRecord}" var="shareRecord">
                                 <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> java从入门到精通</span></td>
-                                    <td >30Mb</td>
-                                    <td>2017/08/23</td>
+                                    <td><div class="checkbox"><label><input type="checkbox" name="shareId" value="${shareRecord.shareId}"></label></div></td>
+                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> ${shareRecord.fileName}</span></td>
+                                    <td><a href="s/${shareRecord.mark}">localhost:8080/cloud/s/${shareRecord.mark}</a></td>
+                                    <td>${shareRecord.shareTime}</td>
 
 
                                 </tr>
-
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Andro Christopher</span></td>
-                                    <td class="center">1kb</td>
-                                    <td class="center">2015/08/23</td>
-
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Jhon Doe</span></td>
-                                    <td class="center">5kb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">如何和傻逼相处</span></td>
-                                    <td class="center">10Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">哈哈哈</span></td>
-                                    <td class="center">11Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">嘻嘻嘻</span></td>
-                                    <td class="center">20Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">傻逼是怎样炼成的</span></td>
-                                    <td class="center">30Mb</td>
-                                    <td class="center">2016/03/01</td>
-
-
-                                </tr>
+								</c:forEach>
                                 </tbody>
                             </table>
 

@@ -12,4 +12,8 @@ public interface IMessageService {
 	int Addfriendmessage(Integer userid,Integer friendid);
 	
 	 List<Messages> getAllMessages(Integer userId);
+	 
+	 int acceptMessage(Messages messages);
+	 
+	 int rejectMessage(Messages messages);
 }
