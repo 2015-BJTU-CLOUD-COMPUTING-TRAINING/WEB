@@ -183,7 +183,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <i class="glyphicon glyphicon-download icon-white"></i>
                                     下载
                                 </a>
-                                <a class="btn btn-default" onclick="chk('saveFile')">
+                                <a class="btn btn-default" onclick="chk('/cloud/saveFile')">
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     保存至网盘
                                 </a>

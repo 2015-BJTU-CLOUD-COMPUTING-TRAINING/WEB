@@ -78,4 +78,18 @@ public class ShareServiceImpl implements IShareService {
 		return shareDao.selectShareDetailByMark(mark);
 	}
 
+	@Override
+	public int saveFile(String uploadIds,Integer userId) {
+		// TODO Auto-generated method stub
+		String [] vals = uploadIds.split(",");
+		for(String uploudId:vals){
+			UserFile olduserFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploudId));
+			userFile.setFileId(olduserFile.getFileId());
+			userFile.setFileName(olduserFile.getFileName());
+			userFile.setUserId(userId);
+			userFileDao.myinsert(userFile);
+		}
+		return 1;
+	}
+
 }

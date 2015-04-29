@@ -48,5 +48,15 @@ public class ShareController {
 		model.addAttribute("shareRecordDetail", shareRecordDetail);
 		return "shareDetail";
 	}
+	
+	@RequestMapping("/saveFile")
+	public String saveFile(HttpSession session ,String uploadIds){
+		User user = (User) session.getAttribute("currentUser");
+		if(user==null){
+			return "redirect:/login";
+		}
+		shareService.saveFile(uploadIds,user.getUserId());
+		return "redirect:/index";
+	}
 
 }

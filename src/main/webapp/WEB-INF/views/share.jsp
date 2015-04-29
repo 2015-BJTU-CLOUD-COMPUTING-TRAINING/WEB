@@ -139,7 +139,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tr>
                                     <td><div class="checkbox"><label><input type="checkbox" name="shareId" value="${shareRecord.shareId}"></label></div></td>
                                     <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> ${shareRecord.fileName}</span></td>
-                                    <td><a href="s/${shareRecord.mark}">localhost:8080/cloud/s/${shareRecord.mark}</a></td>
+                                    <td><a href="/cloud/s/${shareRecord.mark}">192.168.1.106:8080/cloud/s/${shareRecord.mark}</a></td>
                                     <td>${shareRecord.shareTime}</td>
 
 
