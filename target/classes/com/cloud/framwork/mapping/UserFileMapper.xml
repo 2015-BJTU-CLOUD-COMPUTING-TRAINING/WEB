@@ -29,10 +29,10 @@
        
       #{deleteTime,jdbcType=TIMESTAMP}, #{comment,jdbcType=VARCHAR})
   </insert>
-    <select id="selectAllByUserId" parameterType="java.lang.Integer" resultMap="myBaseResultMap" >
+  <select id="selectAllByUserIdAndState" parameterType="java.lang.Integer" resultMap="myBaseResultMap" >
    
     select *
-    from USER_FILE  where USER_ID = #{userId,jdbcType=INTEGER}
+    from USER_FILE  where USER_ID = #{param1,jdbcType=INTEGER} and STATE=#{param2,jdbcType=INTEGER};
   </select>
   <resultMap id="myBaseResultMap" type="com.cloud.app.model.UserAllFile" >
       <id column="UPLOAD_ID" property="uploadId" jdbcType="INTEGER" />

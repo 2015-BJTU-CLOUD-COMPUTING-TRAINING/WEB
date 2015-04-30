@@ -67,9 +67,14 @@ public class ShareServiceImpl implements IShareService {
 	}
 
 	@Override
-	public int deleteShare(String uploadIds) {
+	public int deleteShare(String shareMarks) {
 		// TODO Auto-generated method stub
-		return 0;
+		String [] vals = shareMarks.split(",");
+		for(String shareMark:vals){
+			
+			shareDao.deleteByMark(shareMark);
+		}
+		return 1;
 	}
 
 	@Override

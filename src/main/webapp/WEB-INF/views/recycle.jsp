@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -66,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <li><a class="ajax-link" href="uploadview"><i class="glyphicon glyphicon-upload"></i><span> 上传</span></a>
                         </li>
                         <li><a class="ajax-link" href="shareRecord"><i class="glyphicon glyphicon-share"></i><span> 分享</span></a></li>
-                        <li class="active"><a class="ajax-link" href="recycleview"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
+                        <li class="active"><a class="ajax-link" href="recycle"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
                         </li>
 
                         <li class="nav-header hidden-md">联系人/组</li>
@@ -92,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <a href="index">Home</a>
                     </li>
                     <li>
-                        <a href="recycleview">回收站</a>
+                        <a href="recycle">回收站</a>
                     </li>
                 </ul>
             </div>
@@ -112,12 +114,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <a href="#" class="btn btn-close btn-round btn-default"><i
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
+                            <form name="OPform" id="OPform"  action="download" method="post">
+                            	<input id="uploadIds" type="hidden" name="uploadIds" value="?">
+                            </form>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <a class="btn btn-default" href="#" >
+                                <a class="btn btn-default" onclick="chk('restore')" >
                                     <i class="glyphicon glyphicon-refresh icon-white"></i>
                                     还原
                                 </a>
-                                <a class="btn btn-default" href="#">
+                                <a class="btn btn-default" onclick="chk('deleteRecycleFile')">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     彻底删除
                                 </a>
@@ -131,78 +136,37 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
                                 <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox"></label></div></th>
+                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)"></label></div></th>
                                     <th>文件名</th>
                                     <th>大小</th>
-                                    <th>修改日期</th>
+                                    <th>删除时间</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> java从入门到精通</span></td>
-                                    <td >30Mb</td>
-                                    <td>2017/08/23</td>
-
-
-                                </tr>
-
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Andro Christopher</span></td>
-                                    <td class="center">1kb</td>
-                                    <td class="center">2015/08/23</td>
-
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">Jhon Doe</span></td>
-                                    <td class="center">5kb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">如何和傻逼相处</span></td>
-                                    <td class="center">10Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">哈哈哈</span></td>
-                                    <td class="center">11Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">嘻嘻嘻</span></td>
-                                    <td class="center">20Mb</td>
-                                    <td class="center">2015/06/01</td>
-
-
-                                </tr>
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i>
-                                        <span class="hidden-sm hidden-xs">傻逼是怎样炼成的</span></td>
-                                    <td class="center">30Mb</td>
-                                    <td class="center">2016/03/01</td>
-
-
-                                </tr>
+								<c:forEach items="${requestScope.userAllRecycleFile }" var="file">
+								<tr>
+									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${file.uploadId}"></label></div></td>
+									<td>${file.fileName}</td>
+									<c:choose>
+                                    	<c:when test="${file.hdfs.fileSize/1099511627776>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1099511627776}" type="number" maxFractionDigits="2"/> T</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1073741824>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1073741824}" type="number" maxFractionDigits="2"/> G</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1048576>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1048576}" type="number" maxFractionDigits="2"/> M</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1024>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1024}" type="number" maxFractionDigits="2"/> KB</td>
+                                    	</c:when>
+                                    	<c:otherwise>
+                                    	<td>${file.hdfs.fileSize} B</td>
+										</c:otherwise>
+                                    </c:choose>
+									<td><fmt:formatDate value="${file.deleteTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
+								</tr>
+								</c:forEach>
                                 </tbody>
                             </table>
 
@@ -218,7 +182,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
     </div>
 </div>
+<script type="text/javascript">
+function chk(type){ 
+	 //选择所有name="'fileId'"的对象，返回数组 
+	var obj=document.getElementsByName('uploadId'); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}  
+	
+	if(s=='') {
+	alert('你还没有选择任何内容!'); 
+	}else{ 
+		document.getElementById('uploadIds').value=s;
+		document.getElementById('OPform').action=type;
+		document.getElementById('OPform').submit();
+	} 
+}
+function CheckAll(flag)
+{
+	var obj=document.getElementsByName('uploadId');
+    for (var i = 0; i < obj.length ; i++ )
+        if (obj[i].type.toLowerCase() == 'checkbox')
+        	obj[i].checked = flag;
+}
 
+</script>
 </body>
 </html>
 

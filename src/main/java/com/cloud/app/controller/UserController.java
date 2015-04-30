@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cloud.app.model.Message;
 import com.cloud.app.model.Messages;
@@ -82,7 +84,7 @@ public class UserController {
 
 			User userresult = this.userService.getUserByNameAndPassword(user);
 			if (userresult != null) {
-				userresult.setPassword("");
+				
 				System.out.println(userresult);
 				session.setAttribute("currentUser", userresult);
 				
@@ -128,7 +130,31 @@ public class UserController {
 		return "redirect:/login";
 
 	}
-
+	
+	@ModelAttribute
+	public void getUser(@RequestParam(value="userid",required=false) Integer userid, 
+			Model model){
+		System.out.println("modelAttribute method");
+		if(userid != null){
+			//模拟从数据库中获取对象
+			User oldUser = userService.getUserById(userid);
+			System.out.println("从数据库中获取一个对象: " + oldUser);
+			
+			model.addAttribute("profileUser", oldUser);
+		}
+	}
+	
+	@RequestMapping("/profile")
+	public String profile(@ModelAttribute("profileUser")User profileUser,HttpSession session){
+		System.out
+		.println("--------------------------profile--------------------------");
+		
+		System.out.println(profileUser);
+		userService.update(profileUser);
+		session.setAttribute("currentUser", profileUser);
+		return "redirect:/index";
+		
+	}
 	
 
 }

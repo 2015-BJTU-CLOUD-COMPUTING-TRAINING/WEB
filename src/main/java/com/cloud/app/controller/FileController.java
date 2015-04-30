@@ -123,5 +123,7 @@ public class FileController {
 		shareService.shareFiles(uploadIds);
 		return "redirect:/shareRecord";
 	}
+	
+	
 
 }

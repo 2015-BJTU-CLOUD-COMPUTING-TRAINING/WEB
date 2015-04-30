@@ -39,6 +39,11 @@ public class UserServiceImpl implements IUserService{
 		// TODO Auto-generated method stub
 		return this.userDao.selectByNameAndPassword(user);
 	}
+	@Override
+	public int update(User user) {
+		// TODO Auto-generated method stub
+		return userDao.updateByPrimaryKey(user);
+	}
 	
 	
 	

@@ -23,6 +23,7 @@ import com.cloud.app.model.UserAllFile;
 import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
 import com.cloud.framwork.dao.HDFSMapper;
+import com.cloud.framwork.dao.ShareMapper;
 import com.cloud.framwork.dao.UserFileMapper;
 import com.cloud.framwork.dao.UserMapper;
 import com.cloud.testmybatis.TestMybatis;
@@ -48,6 +49,9 @@ public class FileServiceImpl implements IFileService{
 	
 	@Autowired
     private UserFileMapper userFileDao; 
+	
+	@Autowired
+	private ShareMapper shareDao;
 	
 	@Override
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
@@ -175,9 +179,11 @@ public class FileServiceImpl implements IFileService{
 	public List<UserAllFile> getAllFileByUserID(Integer userId) {
 		// TODO Auto-generated method stub
 		
-		List<UserAllFile> userAllFile=userFileDao.selectAllByUserId(userId);
+		List<UserAllFile> userAllFile=userFileDao.selectAllByUserIdAndState(userId, 0);
 		return userAllFile;
 	}
+	
+	
 
 	@Override
 	public int deleteFile(String uploadIds) {
@@ -185,7 +191,43 @@ public class FileServiceImpl implements IFileService{
 		
 		String [] vals = uploadIds.split(",");
 		for(String uploadId:vals){
-	    	userFileDao.deleteByPrimaryKey(Integer.parseInt(uploadId));
+			userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+			userFile.setDeleteTime(new Date());
+			userFile.setState(1);
+	    	userFileDao.updateByPrimaryKey(userFile);
+		}
+		return 1;
+	}
+
+	@Override
+	public List<UserAllFile> getAllRecycleFileByUserID(Integer userId) {
+		// TODO Auto-generated method stub
+		List<UserAllFile> userAllFile=userFileDao.selectAllByUserIdAndState(userId, 1);
+		return userAllFile;
+	}
+
+	@Override
+	public int deleteRecycleFile(String uploadIds) {
+		// TODO Auto-generated method stub
+		String [] vals = uploadIds.split(",");
+		for(String uploadId:vals){
+			userFile=userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+			shareDao.deleteByUserIdAndFileId(userFile.getUserId(), userFile.getFileId());
+			userFileDao.deleteByPrimaryKey(Integer.parseInt(uploadId));
+			
+		}
+		return 1;
+	}
+
+	@Override
+	public int restore(String uploadIds) {
+		// TODO Auto-generated method stub
+		String [] vals = uploadIds.split(",");
+		for(String uploadId:vals){
+			userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+			userFile.setDeleteTime(null);
+			userFile.setState(0);
+	    	userFileDao.updateByPrimaryKey(userFile);
 		}
 		return 1;
 	}

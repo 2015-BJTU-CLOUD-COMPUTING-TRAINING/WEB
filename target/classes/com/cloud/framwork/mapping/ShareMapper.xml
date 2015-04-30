@@ -77,6 +77,16 @@
     from USER_TABLE
     where USER_ID = #{userId,jdbcType=INTEGER}
   </select>
+  
+    <delete id="deleteByMark" parameterType="java.lang.String" >
+    delete from SHARE_TABLE
+    where MARK = #{mark,jdbcType=VARCHAR}
+  </delete>
+  
+    <delete id="deleteByUserIdAndFileId" parameterType="java.lang.Integer" >
+    delete from SHARE_TABLE
+    where USER_ID = #{param1,jdbcType=INTEGER} and FILE_ID = #{param2,jdbcType=INTEGER}
+  </delete>
   <!-- ****************************************************************************************************** -->
   <!-- ****************************************************************************************************** -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

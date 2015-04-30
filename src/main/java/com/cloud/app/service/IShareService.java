@@ -14,7 +14,7 @@ public interface IShareService {
 	 
 	 int shareFiles(String uploadIds);
 	 
-	 int deleteShare(String uploadIds);
+	 int deleteShare(String shareMarks);
 	 
 	 int saveFile(String uploadIds,Integer userId);
 }

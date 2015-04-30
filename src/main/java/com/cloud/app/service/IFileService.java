@@ -19,6 +19,9 @@ public interface IFileService {
 	 
 	 List<UserAllFile> getAllFileByUserID(Integer userId);
 	 
-	 int deleteFile(String uploadIds);
+	 List<UserAllFile> getAllRecycleFileByUserID(Integer userId);
 	 
+	 int deleteFile(String uploadIds);
+	 int  deleteRecycleFile(String uploadIds);
+	 int  restore(String uploadIds);
 }

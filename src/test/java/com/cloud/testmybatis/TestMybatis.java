@@ -2,6 +2,7 @@ package com.cloud.testmybatis;
 
 
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -145,5 +146,9 @@ public class TestMybatis {
 		for(ShareDetail shareRecord:shareRecords){
 			logger.info(JSON.toJSONString(shareRecord));
 		}
+	}
+	@Test
+	public void test12(){
+		System.out.println(new Date());
 	}
 }

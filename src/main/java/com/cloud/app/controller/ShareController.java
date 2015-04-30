@@ -39,6 +39,19 @@ public class ShareController {
 		return "share";
 	}
 	
+	@RequestMapping("/deleteShare")
+	public String deleteShare(String shareMarks,HttpSession session, Model model){
+		System.out
+		.println("--------------------------showShareRecord--------------------------");
+		User user = (User) session.getAttribute("currentUser");
+		if(user==null){
+			return "redirect:/login";
+		}
+		System.out.println(shareMarks);
+		shareService.deleteShare(shareMarks);
+		return "redirect:/shareRecord";
+	}
+	
 	@RequestMapping("/s/{mark}")
 	public String showShareDetail(@PathVariable String mark,HttpSession session, Model model){
 		System.out
@@ -58,5 +71,6 @@ public class ShareController {
 		shareService.saveFile(uploadIds,user.getUserId());
 		return "redirect:/index";
 	}
+	
 
 }

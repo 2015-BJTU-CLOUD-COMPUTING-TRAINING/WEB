@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -64,7 +65,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <li><a class="ajax-link" href="uploadview"><i class="glyphicon glyphicon-upload"></i><span> 上传</span></a>
                         </li>
                         <li><a class="ajax-link" href="shareRecord"><i class="glyphicon glyphicon-share"></i><span> 分享</span></a></li>
-                        <li><a class="ajax-link" href="recycleview"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
+                        <li><a class="ajax-link" href="recycle"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
                         </li>
 
                         <li class="nav-header hidden-md">联系人/组</li>
@@ -147,8 +148,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<tr>
 									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${file.uploadId}"></label></div></td>
 									<td>${file.fileName}</td>
-									<td>${file.hdfs.fileSize}</td>
-									<td>${file.fileLastmodified}</td>
+									<c:choose>
+                                    	<c:when test="${file.hdfs.fileSize/1099511627776>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1099511627776}" type="number" maxFractionDigits="2"/> T</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1073741824>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1073741824}" type="number" maxFractionDigits="2"/> G</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1048576>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1048576}" type="number" maxFractionDigits="2"/> M</td>
+                                    	</c:when>
+                                    	<c:when test="${file.hdfs.fileSize/1024>1}">
+                                    	<td><fmt:formatNumber value="${file.hdfs.fileSize/1024}" type="number" maxFractionDigits="2"/> KB</td>
+                                    	</c:when>
+                                    	<c:otherwise>
+                                    	<td>${file.hdfs.fileSize} B</td>
+										</c:otherwise>
+                                    </c:choose>
+									<td><fmt:formatDate value="${file.fileLastmodified}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
 								</c:forEach>
 			

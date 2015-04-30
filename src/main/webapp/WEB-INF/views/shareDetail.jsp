@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page import="com.cloud.app.model.User"%>
 <%@page import="com.cloud.app.model.Messages"%>
 <%
@@ -75,7 +76,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#">Profile</a></li>
+                <li><a href="/cloud/profileview">Profile</a></li>
                 <li class="divider"></li>
                 <li><a href="/cloud/logout">Logout</a></li>
             </ul>
@@ -143,14 +144,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     </div>
                     <ul class="nav nav-pills nav-stacked main-menu">
                         <li class="nav-header">分享者</li>
-                        <li class="active"><a class="ajax-link" href="index"><i class="glyphicon glyphicon-home"></i><span> ${requestScope.shareRecordDetail.get(0).user.userNickname }</span></a>
+                        <li class="active"><i class="glyphicon glyphicon-home"></i><span> ${requestScope.shareRecordDetail.get(0).user.userNickname }</span>
                         
                         </li>
 
                         <li class="nav-header hidden-md">分享时间</li>
 
                        
-                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-flag"></i><span> ${requestScope.shareRecordDetail.get(0).shareTime }</span></a>
+                        <li><i class="glyphicon glyphicon-flag"></i><span> <fmt:formatDate value="${requestScope.shareRecordDetail.get(0).shareTime }" pattern="yyyy-MM-dd HH:mm:ss"/></span>
                         </li>
 
                     </ul>
@@ -209,8 +210,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<tr>
 									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${share.userfile.uploadId}"></label></div></td>
 									 <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> ${share.fileName}</span></td>
-                                    <td>${share.hdfs.fileSize}</td>
-                                    <td>${share.userfile.fileLastmodified}</td>
+                                    <c:choose>
+                                    	<c:when test="${share.hdfs.fileSize/1099511627776>1}">
+                                    	<td><fmt:formatNumber value="${share.hdfs.fileSize/1099511627776}" type="number" maxFractionDigits="2"/> T</td>
+                                    	</c:when>
+                                    	<c:when test="${share.hdfs.fileSize/1073741824>1}">
+                                    	<td><fmt:formatNumber value="${share.hdfs.fileSize/1073741824}" type="number" maxFractionDigits="2"/> G</td>
+                                    	</c:when>
+                                    	<c:when test="${share.hdfs.fileSize/1048576>1}">
+                                    	<td><fmt:formatNumber value="${share.hdfs.fileSize/1048576}" type="number" maxFractionDigits="2"/> M</td>
+                                    	</c:when>
+                                    	<c:when test="${share.hdfs.fileSize/1024>1}">
+                                    	<td><fmt:formatNumber value="${share.hdfs.fileSize/1024}" type="number" maxFractionDigits="2"/> KB</td>
+                                    	</c:when>
+                                    	<c:otherwise>
+                                    	<td>${share.hdfs.fileSize} B</td>
+										</c:otherwise>
+                                    </c:choose>
+                                    
+                                    <td><fmt:formatDate value="${share.userfile.fileLastmodified}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
 								</c:forEach>
 			

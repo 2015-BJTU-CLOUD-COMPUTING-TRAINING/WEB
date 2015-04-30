@@ -6,7 +6,7 @@ import com.cloud.app.model.UserFile;
 import java.util.List;
 
 public interface UserFileMapper {
-	List<UserAllFile> selectAllByUserId(Integer userId);
+	List<UserAllFile> selectAllByUserIdAndState(Integer userId,int state);
 
 	int myinsert(UserFile record);
 

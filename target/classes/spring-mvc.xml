@@ -55,10 +55,9 @@
     <!-- 配置直接转发的页面 -->
 	<!-- 可以直接相应转发的页面, 而无需再经过 Handler 的方法.  
 		将jsp页面都放置在WEB-INF下（防止直接路径访问），所以所有的超链接都通过view-controller来转发	-->
-	
+	<mvc:view-controller path="profileview" view-name="profile"/>
 	<mvc:view-controller path="registview" view-name="regist"/>
 	<mvc:view-controller path="uploadview" view-name="upload"/>
-	<mvc:view-controller path="recycleview" view-name="recycle"/>
     <!--  
 		default-servlet-handler 将在 SpringMVC 上下文中定义一个 DefaultServletHttpRequestHandler,
 		它会对进入 DispatcherServlet 的请求进行筛查, 如果发现是没有经过映射的请求, 就将该请求交由 WEB 应用服务器默认的 

@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -66,7 +67,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <li><a class="ajax-link" href="uploadview"><i class="glyphicon glyphicon-upload"></i><span> 上传</span></a>
                         </li>
                         <li class="active"><a class="ajax-link" href="shareRecord"><i class="glyphicon glyphicon-share"></i><span> 分享</span></a></li>
-                        <li><a class="ajax-link" href="recycleview"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
+                        <li><a class="ajax-link" href="recycle"><i class="glyphicon glyphicon-trash"></i><span> 回收站</span></a>
                         </li>
 
                         <li class="nav-header hidden-md">联系人/组</li>
@@ -112,9 +113,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <a href="#" class="btn btn-close btn-round btn-default"><i
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
+                            <form name="OPform" id="OPform"  action="download" method="post">
+                            	<input id="shareMarks" type="hidden" name="shareMarks" value="?">
+                            </form>
                             <div class="pull-right" style="margin-top: -0.45%">
 
-                                <a class="btn btn-default" href="#">
+                                <a class="btn btn-default" onclick="chk('deleteShare')">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     取消分享
                                 </a>
@@ -128,7 +132,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
                                 <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox"></label></div></th>
+                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)"></label></div></th>
                                     <th>文件名</th>
                                     <th>链接</th>
                                     <th>分享日期</th>
@@ -137,10 +141,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <tbody>
 								<c:forEach items="${requestScope.shareRecord}" var="shareRecord">
                                 <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox" name="shareId" value="${shareRecord.shareId}"></label></div></td>
+                                    <td><div class="checkbox"><label><input type="checkbox" name="shareMark" value="${shareRecord.mark}"></label></div></td>
                                     <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> ${shareRecord.fileName}</span></td>
                                     <td><a href="/cloud/s/${shareRecord.mark}">192.168.1.106:8080/cloud/s/${shareRecord.mark}</a></td>
-                                    <td>${shareRecord.shareTime}</td>
+                                    <td><fmt:formatDate value="${shareRecord.shareTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 
 
                                 </tr>
@@ -160,7 +164,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
     </div>
 </div>
+<script type="text/javascript">
+function chk(type){ 
+	 //选择所有name="'fileId'"的对象，返回数组 
+	var obj=document.getElementsByName('shareMark'); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}  
+	
+	if(s=='') {
+	alert('你还没有选择任何内容!'); 
+	}else{ 
+		document.getElementById('shareMarks').value=s;
+		document.getElementById('OPform').action=type;
+		document.getElementById('OPform').submit();
+	} 
+}
+function CheckAll(flag)
+{
+	var obj=document.getElementsByName('shareMark');
+    for (var i = 0; i < obj.length ; i++ )
+        if (obj[i].type.toLowerCase() == 'checkbox')
+        	obj[i].checked = flag;
+}
 
+</script>
 
 </body>
 </html>

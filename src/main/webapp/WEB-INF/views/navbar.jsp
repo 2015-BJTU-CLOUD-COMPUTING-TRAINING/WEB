@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@page import="com.cloud.app.model.User"%>
 <%@page import="com.cloud.app.model.Messages"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -36,7 +35,7 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="#">Profile</a></li>
+                <li><a href="profileview">Profile</a></li>
                 <li class="divider"></li>
                 <li><a href="logout">Logout</a></li>
             </ul>
