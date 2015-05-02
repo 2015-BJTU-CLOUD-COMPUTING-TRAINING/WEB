@@ -182,6 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <thead>
                                 <tr tabindex="0">
                                     <th><div class="checkbox"><label><input type="checkbox" id="0" onclick="CheckAll(this.checked)"></label></div></th>
+                                    <th>用户ID</th>
                                     <th>头像</th>
                                     <th>用户名</th>
                                     
@@ -191,6 +192,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<c:forEach items="${requestScope.allFriends }" var="friend">
                                 <tr tabindex="${friend.userId}">
                                     <td><div class="checkbox"><label><input type="checkbox" name="friendId" value="${friend.userId}" id="${friend.userId}"></label></div></td>
+                                    <td>${friend.userId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
                                     <td>${friend.userNickname}</td>
                                 </tr>

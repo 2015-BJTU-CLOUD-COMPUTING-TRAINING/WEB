@@ -56,7 +56,12 @@ public class GroupController {
 		groupService.exitGroup(groupIds, user.getUserId());
 		return "redirect:/groups";
 	}
-	
+	@RequestMapping("/creatGroup")
+	public String creatGroup(Group group,HttpSession session) {
+		User user = (User) session.getAttribute("currentUser");
+		groupService.creatGroup(group, user.getUserId());
+		return "redirect:/groups";
+	}
 	
 
 	

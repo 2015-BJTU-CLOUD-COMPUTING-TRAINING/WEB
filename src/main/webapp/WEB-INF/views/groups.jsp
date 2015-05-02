@@ -195,17 +195,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel2">创建群组</h4>
                                             </div>
                                             <div class="modal-body" >
-                                               <form id="creatGroup" class="form-horizontal">
+                                               <form id="creatGroup" class="form-horizontal" action="creatGroup">
                                                    <div class="form-group">
                                                    <label>请输入组名：</label>
                                                    <input type="text" class="form-control" name="groupName" placeholder="请输入组名">
                                                    </div>
-                                                   <button type="button" class="btn btn-primary" >创建</button>
+                                                   <div class="form-group">
+                                                   <label>请输入群主题：</label>
+                                                   <input type="text" class="form-control" name="groupTheme" placeholder="请输入群主题">
+                                                   </div>
+                                                   <button type="submit" class="btn btn-primary"  >创建</button>
                                                </form>
                                             </div>
-
                                             <div class="modal-footer">
-
                                             </div>
                                         </div>
                                     </div>
@@ -239,16 +241,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <thead>
                                 <tr tabindex="0">
                                     <th><div class="checkbox"><label><input type="checkbox"  id="0" onclick="CheckAll(this.checked,'groupId')"></label></div></th>
+                                    <th>组号</th>
                                     <th>头像</th>
                                     <th>组名</th>
+                                    <th>主题</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 								<c:forEach items="${requestScope.allGroups }" var="group">
                                 <tr tabindex="${group.groupId}">
                                     <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="${group.groupId}"></label></div></td>
+                                    <td>${group.groupId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
                                     <td><a name="groupFile" onclick="showGroupFile()">${group.groupName}</a></td>
+                                    <td>${group.groupTheme}</td>
 								</tr>
 								</c:forEach>
                                 </tbody>

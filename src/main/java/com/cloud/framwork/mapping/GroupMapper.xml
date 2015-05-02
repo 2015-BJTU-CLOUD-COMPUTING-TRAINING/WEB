@@ -37,6 +37,20 @@
 		delete from FRIEND_TABLE
 		where FRIEND_A = #{param1,jdbcType=INTEGER} and FRIEND_B = #{param2,jdbcType=INTEGER} or FRIEND_A = #{param2,jdbcType=INTEGER} and FRIEND_B = #{param1,jdbcType=INTEGER} 
 	</delete>
+	
+	<insert id="myinsert" parameterType="com.cloud.app.model.Group" >
+  
+    <selectKey resultType="java.lang.Integer" keyProperty="groupId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into GROUP_TABLE (GROUP_NAME, GROUP_THEME, GROUP_BUILDER_ID, 
+      GROUP_LEADER_ID, GROUP_DEPUTY1_ID, GROUP_DEPUTY2_ID, 
+      GROUP_DEPUTY3_ID, 
+      COMMENT)
+    values (#{groupName,jdbcType=VARCHAR}, #{groupTheme,jdbcType=VARCHAR}, #{groupBuilderId,jdbcType=INTEGER}, 
+      #{groupLeaderId,jdbcType=INTEGER}, #{groupDeputy1Id,jdbcType=INTEGER}, #{groupDeputy2Id,jdbcType=INTEGER}, 
+      #{groupDeputy3Id,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
+  </insert>
 	<!-- ****************************************************************************************************** -->
 	<!-- ****************************************************************************************************** -->
   

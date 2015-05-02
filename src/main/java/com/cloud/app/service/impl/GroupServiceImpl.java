@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cloud.app.model.Group;
+import com.cloud.app.model.Member;
 import com.cloud.app.service.IGroupService;
 import com.cloud.framwork.dao.GroupMapper;
 import com.cloud.framwork.dao.MemberMapper;
@@ -18,6 +19,9 @@ public class GroupServiceImpl implements IGroupService {
 	
 	@Autowired
 	private MemberMapper memberDao;
+	
+	@Autowired
+	private Member member;
 
 	@Override
 	public List<Group> ShowGroup(int userId) {
@@ -33,6 +37,18 @@ public class GroupServiceImpl implements IGroupService {
 		for(String groupId:vals){
 			memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), userId);
 		}
+		return 1;
+	}
+
+	@Override
+	public int creatGroup(Group group, Integer userId) {
+		// TODO Auto-generated method stub
+		group.setGroupBuilderId(userId);
+		group.setGroupLeaderId(userId);
+		groupDao.myinsert(group);
+		member.setMemberId(userId);
+		member.setGroupId(group.getGroupId());
+		memberDao.insert(member);
 		return 1;
 	}
 	
