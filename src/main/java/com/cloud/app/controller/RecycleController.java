@@ -49,29 +49,18 @@ public class RecycleController {
 
 	@RequestMapping("/recycle")
 	public String getAllRecycleFile(HttpSession session, Model model) {
-		System.out
-				.println("--------------------------getAllRecycleFile--------------------------");
-	
 		User user = (User) session.getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
+		//获得当前用户所有回收站内文件
 		List<UserAllFile> userAllRecycleFile = fileService.getAllRecycleFileByUserID(user
 				.getUserId());
 		model.addAttribute("userAllRecycleFile", userAllRecycleFile);
-		session.setAttribute("messages", messageService.getAllMessages(user.getUserId()));
 		return "recycle";
 	}
+	
 	@RequestMapping("/restore")
 	public String restore(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------delete--------------------------");
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
-		System.out.println(uploadIds);
+		//恢复回收站内文件
 		fileService.restore(uploadIds);
 		return "redirect:/index";
 	}
@@ -81,13 +70,7 @@ public class RecycleController {
 	@RequestMapping("/deleteRecycleFile")
 	public String deleteRecycleFile(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------delete--------------------------");
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
-		System.out.println(uploadIds);
+		//彻底删除
 		fileService.deleteRecycleFile(uploadIds);
 		return "redirect:/recycle";
 	}

@@ -1,6 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -72,7 +70,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <li><a class="ajax-link" href="showAllFriends"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
                         </li>
-                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
+                        <li><a class="ajax-link" href="groups"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
                         </li>
 
                     </ul>
@@ -123,10 +121,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     分享
                                 </a>
-                                <a class="btn btn-default" onclick="chk('deleteFile')"  >
+                                
+                            
+                            	 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除
-                                </a>
+                                </button>
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="margin-top: 15%">
+                                        <div class="modal-content" >
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">是否删除？</h4>
+                                            </div>
+                                            <div class="row">
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('deleteFile')">是</button>
+                                                <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
+                                            </div>
+                                            <div class="modal-footer">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -136,8 +152,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
-                                <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)"></label></div></th>
+                                <tr tabindex="0">
+                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)" id="0"></label></div></th>
                                     <th>文件名</th>
                                     <th>大小</th>
                                     <th>修改日期</th>
@@ -145,8 +161,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </thead>
                                 <tbody>
                                 <c:forEach items="${requestScope.userAllFile }" var="file">
-								<tr>
-									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${file.uploadId}"></label></div></td>
+								<tr tabindex="${file.uploadId}">
+									<td><div  class="checkbox"><label ><input type="checkbox"  name="uploadId" value="${file.uploadId}" id="${file.uploadId}"></label></div></td>
 									<td>${file.fileName}</td>
 									<c:choose>
                                     	<c:when test="${file.hdfs.fileSize/1099511627776>1}">
@@ -193,6 +209,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
     </div>
 </div>
+
+
 <script type="text/javascript">
 function chk(type){ 
 	 //选择所有name="'fileId'"的对象，返回数组 
@@ -217,7 +235,10 @@ function CheckAll(flag)
         if (obj[i].type.toLowerCase() == 'checkbox')
         	obj[i].checked = flag;
 }
-
+$('#fileTable tr').click(function(){
+    var indexNum = this.tabIndex;
+    document.getElementById(indexNum).click();
+})
 </script>
 </body>
 </html>

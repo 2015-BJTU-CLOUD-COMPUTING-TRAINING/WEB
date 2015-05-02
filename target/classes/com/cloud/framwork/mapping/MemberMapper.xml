@@ -12,6 +12,14 @@
     <result column="TIME_BUILD" property="timeBuild" jdbcType="TIMESTAMP" />
     <result column="COMMENT" property="comment" jdbcType="VARCHAR" />
   </resultMap>
+  	<!-- ****************************************************************************************************** -->
+	<!-- ****************************************************************************************************** -->
+  <delete id="deleteByGroupIdAndUserId" parameterType="java.lang.Integer">
+		delete from MEMBER_TABLE
+    where GROUP_ID = #{param1,jdbcType=INTEGER} and MEMBER_ID = #{param2,jdbcType=INTEGER}
+	</delete>
+	<!-- ****************************************************************************************************** -->
+	<!-- ****************************************************************************************************** -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     <!--
       WARNING - @mbggenerated

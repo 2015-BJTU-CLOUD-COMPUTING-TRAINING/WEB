@@ -22,10 +22,7 @@ public class MessageController {
 	
 	@RequestMapping("/accept")
 	public String accept(@RequestParam("messageId") Integer messageId,HttpServletRequest request){
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
+		
 		List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
 		for(Messages message:messages){
 			if(message.getMessageId()==messageId){
@@ -37,10 +34,7 @@ public class MessageController {
 	
 	@RequestMapping("/reject")
 	public String reject(@RequestParam("messageId") Integer messageId,HttpServletRequest request){
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
+		
 		List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
 		for(Messages message:messages){
 			if(message.getMessageId()==messageId){

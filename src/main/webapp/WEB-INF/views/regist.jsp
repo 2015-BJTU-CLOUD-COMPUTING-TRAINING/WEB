@@ -55,7 +55,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </div>
 
                 <form id="defaultForm" method="post" class="form-horizontal" action="regists">
-              
+              		<div class="form-group">
+                        <label class="col-lg-3 control-label">昵称</label>
+                        <div class="col-lg-5">
+                            <input  type="text" class="form-control"  name="userNickname"/>
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <label class="col-lg-3 control-label">用户名</label>

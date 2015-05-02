@@ -1,8 +1,6 @@
 package com.cloud.app.controller;
 
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cloud.app.model.Message;
-import com.cloud.app.model.Messages;
 import com.cloud.app.model.User;
 import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IUserService;
@@ -34,68 +30,39 @@ public class UserController {
 
 	@RequestMapping("/")
 	public String welcome() {
-		System.out.println("--------------------------Welcome--------------------------");
-
-		return "redirect:/login";
+		//通过了拦截器，直接跳转到主页
+		return "redirect:/index";
 	}
 
 	@RequestMapping("/regists")
 	public String regist(User user, HttpServletRequest request,Model model) {
-		System.out.println("----------------regist------------");
-		//print regist information
-		System.out.println(user);
-		//save user
+		//保存用户信息并返回userId
 		this.userService.save(user);
-		//print again
-		System.out.println(user);
-		//get the currentuser
+		//将新的用户放入session
 		User currentUser = userService.getUserById(user.getUserId());
-		currentUser.setPassword("");
-		//print currentuser
-		System.out.println(currentUser);
+		currentUser.setPassword(null);
 		request.getSession().setAttribute("currentUser", currentUser);
 		return "redirect:/index";
 	}
 
 	@RequestMapping("/login")
 	public String login(User user, HttpSession session, Model model) {
-		System.out
-				.println("--------------------------login--------------------------");
-		// 打印session
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("login session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("login model:" + modelKey + " -- " + modelValue);
-		}
-		// 如果有账号密码...
+		//若已经登录.
 		if (session.getAttribute("currentUser") != null) {
-			
-			User currentuser=(User)session.getAttribute("currentUser");
-			session.setAttribute("messages", messageService.getAllMessages(currentuser.getUserId()));
 			return "redirect:/index";
-		} else if (user.getUserName() != null) {
-
-			User userresult = this.userService.getUserByNameAndPassword(user);
+		}
+		//若输入账号密码
+		else if (user.getUserName()!= null) {
+			User userresult = userService.getUserByNameAndPassword(user);
 			if (userresult != null) {
-				
-				System.out.println(userresult);
-				session.setAttribute("currentUser", userresult);
-				
-				session.setAttribute("messages", messageService.getAllMessages(userresult.getUserId()));
+				userresult.setPassword(null);
+				session.setAttribute("currentUser",userresult );
 				return "redirect:/index";
 			} else
 				model.addAttribute("wrong", "账号或密码错误!");
 			return "login";
 		}
 		return "login";
-
 	}
 	/* A:
 	 * in order to put currentUser in session,the UserController is marked by @SessionAttributes("currentUser").
@@ -112,46 +79,40 @@ public class UserController {
 	public String logout(HttpSession session, Model model) {
 		session.removeAttribute("currentUser");
 		session.removeAttribute("messages");
-		System.out
-				.println("--------------------------logout--------------------------");
-		// 打印session
-		Enumeration<String> e = session.getAttributeNames();
-		while (e.hasMoreElements()) {
-			String s = e.nextElement();
-			System.out.println("login session:" + s + " == "
-					+ session.getAttribute(s));
-		}
-		// 打印model
-		Map<String, Object> modelMap = model.asMap();
-		for (Object modelKey : modelMap.keySet()) {
-			Object modelValue = modelMap.get(modelKey);
-			System.out.println("login model:" + modelKey + " -- " + modelValue);
-		}
 		return "redirect:/login";
 
+	}
+	@RequestMapping("/profileview")
+	public String profileview(HttpSession session){
+		return "profile";
 	}
 	
 	@ModelAttribute
 	public void getUser(@RequestParam(value="userid",required=false) Integer userid, 
 			Model model){
-		System.out.println("modelAttribute method");
 		if(userid != null){
-			//模拟从数据库中获取对象
+			//从数据库中获取对象
 			User oldUser = userService.getUserById(userid);
-			System.out.println("从数据库中获取一个对象: " + oldUser);
-			
 			model.addAttribute("profileUser", oldUser);
 		}
 	}
 	
 	@RequestMapping("/profile")
-	public String profile(@ModelAttribute("profileUser")User profileUser,HttpSession session){
-		System.out
-		.println("--------------------------profile--------------------------");
-		
-		System.out.println(profileUser);
-		userService.update(profileUser);
-		session.setAttribute("currentUser", profileUser);
+	public String profile(@ModelAttribute("profileUser")User profileUser,HttpSession session,@RequestParam("passwordN") String passwordN,@RequestParam("passwordO") String passwordO,Model model){
+		System.out.println("--------------------------profile--------------------------");
+		//当没有填写新密码时，视为不修改密码
+		if("".equals(passwordN)||passwordN==null){
+			userService.update(profileUser);
+		}
+		//当旧密码为不为空且正确时，修改密码
+		else if(passwordO!=null&&passwordO.equals(profileUser.getPassword())){
+			profileUser.setPassword(passwordN);
+			userService.update(profileUser);
+		}//当旧密码为空或者不正确时，返回错误
+		else{
+			model.addAttribute("profileError", "原密码不正确");
+			return "profile";
+		}
 		return "redirect:/index";
 		
 	}

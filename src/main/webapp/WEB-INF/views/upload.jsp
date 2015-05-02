@@ -3,7 +3,6 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,8 +15,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         .sidebar-nav{
             margin-top: 70px;
         }
-
-
         .sidebar-nav div li a{
             height: 60px;
         }
@@ -28,8 +25,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         .sidebar-nav div li a span{
             font-size: 25px;
         }
-
-
         #fileTable thead tr th{
             text-align: center;
             vertical-align: middle;
@@ -42,9 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         .box-inner{
             height: 800px;
         }
-
     </style>
-
 </head>
 
 <body onload="bodyload()" >
@@ -74,7 +67,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <li><a class="ajax-link" href="showAllFriends"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
                         </li>
-                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
+                        <li><a class="ajax-link" href="groups"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
                         </li>
 
                     </ul>
@@ -117,44 +110,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <!-- put your content here -->
                          <div>
                                 <div >
+                                	<font color="red"> ${requestScope.errorV }</font>
                                     <form id="uploadform" action="upload" method="POST" enctype="multipart/form-data" >
                                         <div class="form-group">
                                             <label class="sr-only">上传文件</label>
                                             <input id="file" type="file" multiple="true"  name="file" style="display: none">
                                             <div class="input-append" style="text-align: center;margin-top: 200px">
                                                 <input id="showInfo" class="input-large"  onclick="$('input[id=file]').click();" type="text" style="height:30px;width: 600px">
-                                                <input class="btn btn-success"  onclick="showFile();" type="submit" value="上传">
+                                                <input class="btn btn-success"  onclick="showFile();" type="button" value="上传" >
                                             </div>
                                         </div>
                                     </form>
                                 </div>
-
                                 <div id="fileInfo">
-
+                                <table class="table table-striped" width="100%"><thead><th>文件名称</th><th>文件大小</th><th>文件类型</th><th>文件修改日期</th></thead>
+                                <tbody id="test">
+                                </tbody></table>
                                 </div>
-
-
-  
-    
-
                             </div>
-
-
                         </div>
-
                     </div>
                 </div>
             </div><!--/row-->
-
-
-
-
         </div>
     </div>
 </div>
-
-
-
 <script>
     function bodyload() {
         var info = document.getElementById("fileInfo");
@@ -169,20 +149,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script>
     function showFile() {
+    	var existedVolume = document.getElementById("existedVolume").value;
+    	var totalVolume = document.getElementById("totalVolume").value;
         var files = document.getElementById("file").files;
+        if(files.length>0){
         var tableTitle = '<table class="table table-striped" width="100%"><thead><th>文件名称</th><th>文件大小</th><th>文件类型</th><th>文件修改日期</th></thead><tbody>'
         var info1 = "";
+        var totalV=Number(existedVolume);
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var fName = file.name;
             var fSize = file.size + "字节";
+            totalV+=file.size;
             var fType = file.type;
             var fDate = file.lastModifiedDate;
             info1 += "<tr><td>" + fName + "</td><td>" + fSize + "</td><td>" + fType + "</td><td>" + fDate + "</td></tr>"
         }
-        document.getElementById("fileInfo").innerHTML = tableTitle + info1 + "</tbody></table>";
+        document.getElementById("test").innerHTML = info1; 
         document.getElementById("fileInfo").style.display = "block";
+         if(totalVolume>totalV){
+        	document.getElementById("uploadform").submit();
+        }else
+        	alert("空间不足！");
         
+        }else
+        	alert("你还没有选择任何文件！");
     }
 </script>
 

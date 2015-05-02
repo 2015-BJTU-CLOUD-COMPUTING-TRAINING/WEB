@@ -74,7 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <li><a class="ajax-link" href="showAllFriends"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
                         </li>
-                        <li><a class="ajax-link" href="#"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
+                        <li><a class="ajax-link" href="groups"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
                         </li>
 
                     </ul>
@@ -118,10 +118,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             </form>
                             <div class="pull-right" style="margin-top: -0.45%">
 
-                                <a class="btn btn-default" onclick="chk('deleteShare')">
+                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     取消分享
-                                </a>
+                                </button>
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="margin-top: 15%">
+                                        <div class="modal-content" >
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel">是否取消分享？</h4>
+                                            </div>
+                                            <div class="row">
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('deleteShare')">是</button>
+                                                <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -131,17 +148,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
-                                <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)"></label></div></th>
+                                <tr tabindex="0" >
+                                    <th><div class="checkbox"><label><input type="checkbox" onclick="CheckAll(this.checked)" id="0"></label></div></th>
                                     <th>文件名</th>
                                     <th>链接</th>
                                     <th>分享日期</th>
-                                </tr>
+                                </tr >
                                 </thead>
                                 <tbody>
 								<c:forEach items="${requestScope.shareRecord}" var="shareRecord">
-                                <tr>
-                                    <td><div class="checkbox"><label><input type="checkbox" name="shareMark" value="${shareRecord.mark}"></label></div></td>
+                                <tr tabindex="${shareRecord.mark}">
+                                    <td><div class="checkbox"><label><input type="checkbox" name="shareMark" value="${shareRecord.mark}" id="${shareRecord.mark}"></label></div></td>
                                     <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> ${shareRecord.fileName}</span></td>
                                     <td><a href="/cloud/s/${shareRecord.mark}">192.168.1.106:8080/cloud/s/${shareRecord.mark}</a></td>
                                     <td><fmt:formatDate value="${shareRecord.shareTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
@@ -188,6 +205,10 @@ function CheckAll(flag)
         if (obj[i].type.toLowerCase() == 'checkbox')
         	obj[i].checked = flag;
 }
+$('#fileTable tr').click(function(){
+    var indexNum = this.tabIndex;
+    document.getElementById(indexNum).click();
+})
 
 </script>
 

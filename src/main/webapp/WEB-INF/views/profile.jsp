@@ -77,18 +77,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <input type="text" class="form-control" name="bjtuEmail" value="${sessionScope.currentUser.bjtuEmail}"/>
                         </div>
                     </div>
-
+					<div class="form-group">
+                        <label class="col-lg-3 control-label">原密码</label>
+                        <div class="col-lg-5">
+                            <input type="password" class="form-control" name="passwordO" placeholder="请输入原密码" />
+                        </div>
+                        <font color="red"> ${requestScope.profileError }</font>
+                    </div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label">密码</label>
                         <div class="col-lg-5">
-                            <input type="password" class="form-control" name="password" value="${sessionScope.currentUser.password}" />
+                            <input type="password" class="form-control" name="passwordN" placeholder="请输入新密码"/>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-lg-3 control-label">确认密码</label>
                         <div class="col-lg-5">
-                            <input type="password" class="form-control" name="confirmPassword"  value="${sessionScope.currentUser.password}" />
+                            <input type="password" class="form-control" name="confirmPassword"  placeholder="请确认新密码" />
                         </div>
                     </div>
 

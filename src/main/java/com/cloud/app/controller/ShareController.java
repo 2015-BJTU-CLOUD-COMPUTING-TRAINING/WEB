@@ -28,46 +28,31 @@ public class ShareController {
 	
 	@RequestMapping("/shareRecord")
 	public String showShareRecord(HttpSession session, Model model){
-		System.out
-		.println("--------------------------showShareRecord--------------------------");
+		//根据当前用户id获得所有已分享文件
 		User user = (User) session.getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
 		model.addAttribute("shareRecord", shareService.getAllShareRecordByUserID(user.getUserId()));
-		session.setAttribute("messages", messageService.getAllMessages(user.getUserId()));
 		return "share";
 	}
 	
 	@RequestMapping("/deleteShare")
 	public String deleteShare(String shareMarks,HttpSession session, Model model){
-		System.out
-		.println("--------------------------showShareRecord--------------------------");
-		User user = (User) session.getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
-		System.out.println(shareMarks);
+		//根据分享Mark取消分享
 		shareService.deleteShare(shareMarks);
 		return "redirect:/shareRecord";
 	}
 	
 	@RequestMapping("/s/{mark}")
 	public String showShareDetail(@PathVariable String mark,HttpSession session, Model model){
-		System.out
-		.println("--------------------------showShareDetail--------------------------");
+		//根据Mark获得分享详情
 		List<ShareDetail> shareRecordDetail =  shareService.getAllShareDetailByMark(mark);
-		model.addAttribute("shareUser", shareRecordDetail.get(0).getUser());
 		model.addAttribute("shareRecordDetail", shareRecordDetail);
 		return "shareDetail";
 	}
 	
 	@RequestMapping("/saveFile")
 	public String saveFile(HttpSession session ,String uploadIds){
+		//根据当前用户id和分享文件的uploadId保存至当前用户空间中
 		User user = (User) session.getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
 		shareService.saveFile(uploadIds,user.getUserId());
 		return "redirect:/index";
 	}

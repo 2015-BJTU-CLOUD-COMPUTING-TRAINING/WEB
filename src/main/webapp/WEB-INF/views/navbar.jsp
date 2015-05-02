@@ -1,6 +1,9 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@page import="com.cloud.app.model.Messages"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%> 
+
 
 <!DOCTYPE html>
 <html>
@@ -27,7 +30,7 @@
         </div>
 		
         <!-- user dropdown starts -->
-        
+       <c:if test="${!empty sessionScope.currentUser }">
         <div class="btn-group pull-right">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-user"></i>
@@ -40,6 +43,70 @@
                 <li><a href="logout">Logout</a></li>
             </ul>
         </div>
+        <input type="hidden" id="existedVolume" value="${sessionScope.currentUser.existedVolume}"/>
+           <input type="hidden" id="totalVolume" value="${sessionScope.currentUser.totalVolume}"/>
+          <div class="btn-group pull-right" >
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"> 
+            
+                <span class="hidden-sm hidden-xs">
+                					<c:choose>
+                                    	<c:when test="${sessionScope.currentUser.existedVolume/1099511627776>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.existedVolume/1099511627776}" type="number" maxFractionDigits="2"/>T</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.existedVolume/1073741824>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.existedVolume/1073741824}" type="number" maxFractionDigits="2"/>G</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.existedVolume/1048576>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.existedVolume/1048576}" type="number" maxFractionDigits="2"/>M</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.existedVolume/1024>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.existedVolume/1024}" type="number" maxFractionDigits="2"/>KB</td>
+                                    	</c:when>
+                                    	<c:otherwise>
+                                    	<td>${sessionScope.currentUser.existedVolume} B</td>
+										</c:otherwise>
+                                    </c:choose>
+                                    /
+                					<c:choose>
+                                    	<c:when test="${sessionScope.currentUser.totalVolume/1099511627776>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.totalVolume/1099511627776}" type="number" maxFractionDigits="2"/>T</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.totalVolume/1073741824>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.totalVolume/1073741824}" type="number" maxFractionDigits="2"/>G</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.totalVolume/1048576>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.totalVolume/1048576}" type="number" maxFractionDigits="2"/>M</td>
+                                    	</c:when>
+                                    	<c:when test="${sessionScope.currentUser.totalVolume/1024>1}">
+                                    	<td><fmt:formatNumber value="${sessionScope.currentUser.totalVolume/1024}" type="number" maxFractionDigits="2"/>KB</td>
+                                    	</c:when>
+                                    	<c:otherwise>
+                                    	<td>${sessionScope.currentUser.totalVolume} B</td>
+										</c:otherwise>
+                                    </c:choose>
+                </span>
+                <span class="caret"></span>
+          </button>
+            
+        </div>
+        </c:if>
+        <c:if test="${empty sessionScope.currentUser }">
+         <div class="btn-group pull-right">
+            <a href="/cloud/login">
+            <button class="btn btn-default dropdown-toggle" >
+               	<span class="hidden-sm hidden-xs">登录</span>
+                <span class="caret"></span>
+            </button>
+            </a>
+            <a href="/cloud/registview">
+            <button class="btn btn-default dropdown-toggle"  >
+               	<span class="hidden-sm hidden-xs">注册</span>
+                <span class="caret"></span>
+            </button>
+           </a>
+        </div>
+        </c:if>
+        
         
         <!-- user dropdown ends -->
         <!-- theme selector starts -->
@@ -62,14 +129,13 @@
             </ul>
         </div>
         <!-- theme selector ends -->
-      <%  List<Messages> messages = (List<Messages>)request.getSession().getAttribute("messages");
-			Integer counts = messages.size();
-		%> 
+      
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">首页</a></li>
+                 <c:if test="${!empty sessionScope.currentUser }">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">您有<%=counts%>条消息待处理<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">您有${fn:length(sessionScope.messages)}条消息待处理<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                     <c:if test="${empty sessionScope.messages }">
 							<li style="text-align: center">没有待处理信息</li>
@@ -91,6 +157,9 @@
 					</c:if>
                     </ul>
                 </li>
+                </c:if>
+                <c:if test="${empty sessionScope.currentUser }">
+                </c:if>
                 <li><a href="#">帮助</a></li>
             </ul>
         </div>

@@ -48,10 +48,16 @@ public class FileServiceImpl implements IFileService{
 	UserFile userFile;
 	
 	@Autowired
-    private UserFileMapper userFileDao; 
+    UserFileMapper userFileDao; 
 	
 	@Autowired
-	private ShareMapper shareDao;
+	ShareMapper shareDao;
+	
+	@Autowired
+	User user;
+	
+	@Autowired
+	UserMapper userDao;
 	
 	@Override
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
@@ -188,13 +194,22 @@ public class FileServiceImpl implements IFileService{
 	@Override
 	public int deleteFile(String uploadIds) {
 		// TODO Auto-generated method stub
-		
+		long existedVolume;
 		String [] vals = uploadIds.split(",");
 		for(String uploadId:vals){
+			//将文件放入回收站
 			userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
 			userFile.setDeleteTime(new Date());
 			userFile.setState(1);
 	    	userFileDao.updateByPrimaryKey(userFile);
+	    	//update用户existedVolume
+	    	hdfs = hdfsDao.selectByPrimaryKey(userFile.getFileId());
+	    	user = userDao.selectByPrimaryKey(userFile.getUserId());
+	    	existedVolume=user.getExistedVolume();
+	    	existedVolume-=hdfs.getFileSize();
+	    	user.setExistedVolume(existedVolume);
+	    	userDao.updateByPrimaryKey(user);
+	    	
 		}
 		return 1;
 	}
@@ -223,11 +238,20 @@ public class FileServiceImpl implements IFileService{
 	public int restore(String uploadIds) {
 		// TODO Auto-generated method stub
 		String [] vals = uploadIds.split(",");
+		long existedVolume;
 		for(String uploadId:vals){
+			//将文件从回收站取出
 			userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
 			userFile.setDeleteTime(null);
 			userFile.setState(0);
 	    	userFileDao.updateByPrimaryKey(userFile);
+	     	//update用户existedVolume
+	    	hdfs = hdfsDao.selectByPrimaryKey(userFile.getFileId());
+	    	user = userDao.selectByPrimaryKey(userFile.getUserId());
+	    	existedVolume=user.getExistedVolume();
+	    	existedVolume+=hdfs.getFileSize();
+	    	user.setExistedVolume(existedVolume);
+	    	userDao.updateByPrimaryKey(user);
 		}
 		return 1;
 	}

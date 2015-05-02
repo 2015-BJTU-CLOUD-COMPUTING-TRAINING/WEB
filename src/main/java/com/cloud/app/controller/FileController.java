@@ -34,6 +34,7 @@ import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
 import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IShareService;
+import com.cloud.app.service.IUserService;
 
 @Controller
 public class FileController {
@@ -46,51 +47,50 @@ public class FileController {
 	
 	@Autowired
 	IMessageService messageService;
+	
+	@Autowired
+	IUserService userService;
 
 	@RequestMapping("/index")
 	public String getAllFile(HttpSession session, Model model) {
-		System.out
-				.println("--------------------------index--------------------------");
-	
 		User user = (User) session.getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
+		//根据当前用户id获得所有该用户文件
 		List<UserAllFile> userAllFile = fileService.getAllFileByUserID(user
 				.getUserId());
 		model.addAttribute("userAllFile", userAllFile);
-		session.setAttribute("messages", messageService.getAllMessages(user.getUserId()));
 		return "index";
+	}
+	
+	@RequestMapping("/uploadview")
+	public String upload(HttpServletRequest request) {
+		return "upload";
 	}
 
 	@RequestMapping("/upload")
 	public String upload(@RequestParam("file") MultipartFile[] files,
-			HttpServletRequest request) {
+			HttpServletRequest request,Model model) {
 		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
+		//上传文件总大小
+		long fileSize = 0;
+		//用户已用空间
+		user = userService.getUserById(user.getUserId());
+		long existedV = user.getExistedVolume();
 		for (MultipartFile file : files) {
-
-			System.out.println("文件类型：" + file.getContentType());
-			System.out.println("文件名称：" + file.getOriginalFilename());
-			System.out.println("文件大小:" + file.getSize());
-			System.out
-					.println(".................................................");
 			if (!file.isEmpty()) {
+				fileSize += file.getSize();
 				// save file
 				fileService.saveFile(file, request, user.getUserId());
 			}
 		}
+		//更新用户已用空间
+		user.setExistedVolume(existedV+fileSize);
+		userService.update(user);
 		return "redirect:/index";
 	}
 
 	@RequestMapping("/download")
 	public String download(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------download--------------------------");
-		System.out.println(uploadIds);
 		fileService.getFile(request, response, uploadIds);
 		return null;
 	}
@@ -98,13 +98,6 @@ public class FileController {
 	@RequestMapping("/deleteFile")
 	public String deleteFile(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------delete--------------------------");
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
-		System.out.println(uploadIds);
 		fileService.deleteFile(uploadIds);
 		return "redirect:/index";
 	}
@@ -112,14 +105,6 @@ public class FileController {
 	@RequestMapping("/share")
 	public String share(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------share--------------------------");
-		User user = (User) request.getSession().getAttribute("currentUser");
-		if(user==null){
-			return "redirect:/login";
-		}
-		System.out.println(uploadIds);
-		System.out.println(request.getSession().getAttribute("currentUser"));
 		shareService.shareFiles(uploadIds);
 		return "redirect:/shareRecord";
 	}

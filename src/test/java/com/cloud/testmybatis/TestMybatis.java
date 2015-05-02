@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
+import com.cloud.app.model.Group;
 import com.cloud.app.model.Message;
 import com.cloud.app.model.Messages;
 import com.cloud.app.model.Share;
@@ -24,6 +25,7 @@ import com.cloud.app.model.User;
 import com.cloud.app.model.UserAllFile;
 import com.cloud.app.service.IFileService;
 import com.cloud.app.service.IFriendService;
+import com.cloud.app.service.IGroupService;
 import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IShareService;
 import com.cloud.app.service.IUserService;
@@ -53,6 +55,9 @@ public class TestMybatis {
 	
 	@Resource
 	private IShareService shareService;
+	
+	@Resource
+	private IGroupService groupService;
 	
 	@Test
 	public void test1(){
@@ -150,5 +155,12 @@ public class TestMybatis {
 	@Test
 	public void test12(){
 		System.out.println(new Date());
+	}
+	@Test
+	public void test13(){
+		List<Group> groups=groupService.ShowGroup(9);
+		for(Group group:groups){
+			logger.info(JSON.toJSONString(group));
+		}
 	}
 }

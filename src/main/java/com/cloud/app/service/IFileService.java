@@ -24,4 +24,6 @@ public interface IFileService {
 	 int deleteFile(String uploadIds);
 	 int  deleteRecycleFile(String uploadIds);
 	 int  restore(String uploadIds);
+	 
+	
 }
