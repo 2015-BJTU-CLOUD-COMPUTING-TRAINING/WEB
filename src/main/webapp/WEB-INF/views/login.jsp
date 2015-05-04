@@ -134,16 +134,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <button type="submit" class="btn btn-success btn-lg btn-block active" role="button">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button>
                 <a href="registview" class="btn btn-success btn-lg btn-block active " role="button">注&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;册</a>
             </form>
-
     </div>
-
-
-
-
 </div>
-
-
-
 <script src="/cloud/js/jquery-2.1.3.min.js"></script>
 <script src="/cloud/js/bootstrap.min.js"></script>
 </body>

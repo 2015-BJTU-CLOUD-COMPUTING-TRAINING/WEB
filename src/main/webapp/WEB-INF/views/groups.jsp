@@ -15,14 +15,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <!-- The styles -->
 
     <link href="css/charisma-app.css" rel="stylesheet">
-
-
-
-
-
-
-
-
     <![endif]-->
     <style>
         body {
@@ -106,7 +98,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <li><a class="ajax-link" href="showAllFriends"><i class="glyphicon glyphicon-user"></i><span> 好友</span></a>
                         </li>
-                        <li class="active"><a  href="groups"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
+                        <li class="active"><a href="groups"><i class="glyphicon glyphicon-flag"></i><span> 群组</span></a>
                         </li>
 
                     </ul>
@@ -162,19 +154,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel">添加群组</h4>
                                             </div>
                                             <div class="modal-body" >
-                                                <label style="margin-left:4.5%">请输入组名进行查找：</label>
+                                                <label style="margin-left:4.5%">请输入组号/组名进行查找：</label>
                                                 <form class="form-inline" style="text-align: center">
-                                                    <input type="text" class="form-control" style="width: 80%">
-                                                    <button type="button" class="btn btn-primary" id="search">查找</button>
+                                                    <input type="text" class="form-control" style="width: 80%" id="searchGroup">
+                                                    <button type="button" class="btn btn-primary" id="searchGroupbtn">查找</button>
                                                 </form>
                                             </div>
-                                            <div style="display: none;width: 100%" id="searchResult">
+                                            <div style="display: none;width: 100%" id="searchGroupResult">
                                                 <label style="margin-left: 7%">搜索结果：</label>
-                                                <div style="margin-left: 7%">
-                                                    <img src="images/tou.jpg" style="height: 50px;">
-                                                    <span>群组号：xxx</span>
-                                                </div>
-                                                <button type="button" class="btn btn-primary"style="margin-left: 45%">申请加入</button>
+                                                <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="searchGroupTable">
+                                                    <thead id="searchGroupTablethead">
+                                                    </thead>
+                                                    <tbody id="searchGroupTableTbody">
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-primary"style="margin-left: 45%" onclick="joinGroup()">申请加入</button>
                                             </div>
                                             <div class="modal-footer">
 
@@ -225,7 +219,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel6">是否退出该群组？</h4>
                                             </div>
                                             <div class="row">
-                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('exitGroup','groupIds','groupId')">是</button>
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="exitGroup('exitGroup','groupId')">是</button>
                                                 <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
                                             </div>
                                             <div class="modal-footer">
@@ -255,7 +249,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="Group${group.groupId}C"></label></div></td>
                                     <td>${group.groupId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
-                                    <td><a onclick="showGroupFile(${group.groupId})">${group.groupName}</a></td>
+                                    <td><a id="showGroupFile${group.groupId}" onclick="showGroupFile(${group.groupId})">${group.groupName}</a></td>
                                     <td>${group.groupTheme}</td>
                                     <td><fmt:formatDate value="${group.groupTimeBuild}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
@@ -270,7 +264,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <!--群组文件显示框-->
                     <div class="box-inner" id="boxForGroupFile" style="display: none">
                         <div class="box-header well" data-original-title="">
-                            <h2 id="GroupV"><i class="glyphicon glyphicon-star-empty"></i> 群文件</h2>
+                            <h2 id="GroupV"><i class="glyphicon glyphicon-star-empty"></i> 群空间</h2>
 
                             <div class="box-icon">
                                 <a href="#" class="btn btn-setting btn-round btn-default"><i
@@ -281,7 +275,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal3" >
+                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal3" id="addMemberbtn">
                                     <i class="glyphicon glyphicon-plus icon-white"></i>
                                     添加成员
                                 </button>
@@ -293,19 +287,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel1">添加成员</h4>
                                             </div>
                                             <div class="modal-body" >
-                                                <label style="margin-left:4.5%">请输入用户名进行查找：</label>
+                                                <label style="margin-left:4.5%">请输入用户名/用户ID进行查找：</label>
                                                 <form class="form-inline" style="text-align: center">
-                                                    <input type="text" class="form-control" style="width: 80%">
-                                                    <button type="button" class="btn btn-primary" id="search2">查找</button>
+                                                    <input type="text" class="form-control" style="width: 80%" id="searchUser">
+                                                    <button type="button" class="btn btn-primary" id="searchUserbtn">查找</button>
                                                 </form>
                                             </div>
-                                            <div style="display: none;width: 100%" id="searchResult2">
+                                             <div style="display: none;width: 100%" id="searchUserResult">
                                                 <label style="margin-left: 7%">搜索结果：</label>
-                                                <div style="margin-left: 7%">
-                                                    <img src="images/tou.jpg" style="height: 50px;">
-                                                    <span>群组号：xxx</span>
-                                                </div>
-                                                <button type="button" class="btn btn-primary"style="margin-left: 45%">加入群组</button>
+                                                <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="searchUserTable">
+                                                    <thead id="searchUserTablethead">
+                                                    </thead>
+                                                    <tbody id="searchUserTableTbody">
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-primary"style="margin-left: 45%" onclick="inviteGroup()">邀请加入</button>
                                             </div>
                                             <div class="modal-footer">
 
@@ -346,7 +342,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'fileId')" value="#myModal5">
+                                 <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'uploadId')" value="#downloadGroupFileModal">
+                                    <i class="glyphicon glyphicon-trash icon-white"></i>
+                                    下载文件
+                                </button>
+                                <div class="modal fade" id="downloadGroupFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="margin-top: 15%">
+                                        <div class="modal-content" >
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title" id="myModalLabel4">是否下载该文件？</h4>
+                                            </div>
+                                            <div class="row">
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('downloadGroup','uploadIds','uploadId')">是</button>
+                                                <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'uploadId')" value="#myModal5">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除文件
                                 </button>
@@ -358,7 +375,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel4">是否删除该文件？</h4>
                                             </div>
                                             <div class="row">
-                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('deleteGroupFile','uploadIds','uploadId')">是</button>
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="deleteGroupFile('deleteGroupFile','uploadId')">是</button>
                                                 <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
                                             </div>
                                             <div class="modal-footer">
@@ -379,7 +396,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
                                 <tr  id="fileTabletr" onclick="clickTr(this.id)">
-                                    <th><div class="checkbox"><label><input type="checkbox" id="fileTabletrC" onclick="CheckAll(this.checked,'fileId')"></label></div></th>
+                                    <th><div class="checkbox"><label><input type="checkbox" id="fileTabletrC" onclick="CheckAll(this.checked,'uploadId')"></label></div></th>
                                     <th>文件名</th>
                                     <th>大小</th>
                                     <th>上传者</th>
@@ -398,9 +415,82 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
 </div>
 <script>
-    $('#search').click(function(){
-        document.getElementById('searchResult').style.display="table";
+ $('#searchGroupbtn').click(function(){
+    	var groupIdOrName=document.getElementById('searchGroup').value;
+    	var url="searchGroup";
+    	var args={"groupIdOrName":groupIdOrName}
+    	$.getJSON(url,args,function(data){
+    		$("#searchGroupTable tr").remove();
+    		if(data[0]==null){
+    			$("#searchGroupTablethead").append("<tr><td>没有找到任何东西</td></tr>")
+    		}else{
+    			$("#searchGroupTablethead").append("<tr id='searchGroupTabletr' onclick='clickTr(this.id)'><th><div class='checkbox'><label><input type='checkbox' id='searchGroupTabletrC' onclick='ChecksearchGroupIdAll(this.checked)'></label></div></th><th>组号</th><th>组名</th></tr>")
+    		for(var i=0;i<data.length;i++){
+    			var groupId=data[i].groupId;
+    			var groupName=data[i].groupName;
+    			$("#searchGroupTableTbody").append("<tr id='searchGroup"+groupId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' name='searchGroupId' value='"+groupId+"' id='searchGroup"+groupId+"C'></label></div></td><td>"+groupId+"</td><td>"+groupName+"</td></tr>")	
+    			}
+    		}})
+        document.getElementById('searchGroupResult').style.display="table";
     });
+ $('#searchUserbtn').click(function(){
+ 	var userIdOrName=document.getElementById('searchUser').value;
+ 	var url="searchUser";
+ 	var args={"userIdOrName":userIdOrName}
+ 	$.getJSON(url,args,function(data){
+ 		$("#searchUserTable tr").remove();
+ 		if(data[0]==null){
+ 			$("#searchUserTablethead").append("<tr><td>没有找到任何东西</td></tr>")
+ 		}else{
+ 			$("#searchUserTablethead").append("<tr id='searchUserTabletr' onclick='clickTr(this.id)'><th><div class='checkbox'><label><input type='checkbox' id='searchUserTabletrC' onclick='ChecksearchUserIdAll(this.checked)'></label></div></th><th>ID</th><th>昵称</th></tr>")
+ 		for(var i=0;i<data.length;i++){
+ 			var userId=data[i].userId;
+ 			var userNickName=data[i].userNickname;
+ 			$("#searchUserTableTbody").append("<tr id='searchUser"+userId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' name='searchUserId' value='"+userId+"' id='searchUser"+userId+"C'></label></div></td><td>"+userId+"</td><td>"+userNickName+"</td></tr>")	
+ 			}
+ 		}})
+     document.getElementById('searchUserResult').style.display="table";
+ });   
+ //searchGroupId首行全选(自身是否被选择，目标节点名)
+    function ChecksearchGroupIdAll(flag)
+    {	
+    	var obj=document.getElementsByName("searchGroupId");
+        for (var i = 0; i < obj.length ; i++ )
+            if (obj[i].type.toLowerCase() == 'checkbox')
+            	obj[i].checked = flag;
+    }
+  //searchUserId首行全选(自身是否被选择，目标节点名)
+    function ChecksearchUserIdAll(flag)
+    {	
+    	var obj=document.getElementsByName("searchUserId");
+        for (var i = 0; i < obj.length ; i++ )
+            if (obj[i].type.toLowerCase() == 'checkbox')
+            	obj[i].checked = flag;
+    }
+//申请入组
+function joinGroup(){
+	var obj=document.getElementsByName("searchGroupId"); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}
+	if(s==''){
+		alert("你还没有选择任何内容!");
+	}
+	else{
+		var url="joinGroup";
+		var args={"groupIds":s};
+		$.getJSON(url,args,function(data){
+			var result="";
+			for(var i=0;i<data.length;i++){
+				result += data[i]+"\n";
+				}
+			alert(result);
+			
+		})
+		
+	}
+}
 //首行全选(自身是否被选择，目标节点名)
 function CheckAll(flag,which)
 {	
@@ -440,6 +530,27 @@ function chk(type,target,from){
 		document.getElementById(target).value=s;
 		document.getElementById('OPform').action=type;
 		document.getElementById('OPform').submit();
+	 
+}
+//退出群
+function exitGroup(type,from){ 
+	 //选择所有name="from"的对象，返回数组 
+	var obj=document.getElementsByName(from); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}  
+	var url=type;
+	var args={"groupIds":s};
+	$.getJSON(url,args,function(data){
+		var result="";
+		for(var i=0;i<data.length;i++){
+			result += data[i]+"\n";
+			}
+		alert(result);
+		window.location.href="groups";
+		
+	})
 	 
 }
 //获得群成员
@@ -512,10 +623,10 @@ function showMember(groupId){
 		}
 		
     	$.getJSON(url,args,function(data){
-    		if(data.length==0){
+    		if(data.length==1){
     			$("#fileTableTbody").append("<div align='center' style='font-size: 24;margin-top: 7%;color: gray;' ><h2>啊哦，这里什么都没有哦。</h2></div>")
     		}else{
-    			for(var i=0;i<data.length;i++){
+    			for(var i=1;i<data.length;i++){
     				var uploadId = data[i].uploadId;
     				var fileName = data[i].fileName;
     				var fileSize = data[i].hdfs.fileSize;
@@ -526,20 +637,53 @@ function showMember(groupId){
     				var uploaderNickName = data[i].userNickName;
     				$("#fileTableTbody").append("<tr id='GroupFile"+uploadId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' id='GroupFile"+uploadId+"C' value='"+uploadId+"' name='uploadId'></label></div></td><td><i class='glyphicon glyphicon-file'></i><span class='hidden-sm hidden-xs'>"+fileName+"</span></td><td>"+fileSize+"</td><td>"+uploaderNickName+"</td><td>"+uploadTime+"</td></tr>")
     			}
-    			var existedVolume = data[0].group.existedVolume;
-				var groupName = data[0].group.groupName;
-				var totalVolume = data[0].group.totalVolume;
-				var groupId= data[0].groupId;
-				existedVolume = formatFileSize(existedVolume);
-				totalVolume = formatFileSize(totalVolume);
-				
-				$("#GroupV").append("     "+groupName+":"+existedVolume+"/"+totalVolume); 
     		}
+    		//显示群简介
+    		var existedVolume = data[0].group.existedVolume;
+			var groupName = data[0].group.groupName;
+			var totalVolume = data[0].group.totalVolume;
+			existedVolume = formatFileSize(existedVolume);
+			totalVolume = formatFileSize(totalVolume);
+			$("#GroupV").append("     "+groupName+":"+existedVolume+"/"+totalVolume);
+			//非管理员屏蔽添加成员按钮
+			var groupLeaderId =data[0].group.groupLeaderId;
+			var groupDeputy1Id =data[0].group.groupDeputy1Id;
+			var groupDeputy2Id =data[0].group.groupDeputy2Id;
+			var groupDeputy3Id =data[0].group.groupDeputy3Id;
+			var currentUserId = document.getElementById("currentUserId").value;
+			if(currentUserId!=groupLeaderId&&currentUserId!=groupDeputy1Id&&currentUserId!=groupDeputy2Id&&currentUserId!=groupDeputy3Id){
+				 document.getElementById("addMemberbtn").style.display="none";
+			}
     	})
         document.getElementById("boxContent").style.display="none";
         document.getElementById("boxForGroupFile").style.display="block";
-        
     }
+    
+//删除群文件
+function deleteGroupFile(type,from){ 
+	 //选择所有name="from"的对象，返回数组 
+	var obj=document.getElementsByName(from); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}  
+		
+		var url=type;
+		var args={"uploadIds":s};
+		$.getJSON(url,args,function(data){
+			var result="";
+			for(var i=0;i<data.length;i++){
+				result += data[i]+"\n";
+				}
+			alert(result);
+			
+			var groupId = document.getElementById('showMembers').value;
+			groupId="#showGroupFile"+groupId;
+			$(groupId).click();
+		})
+		
+	 
+}
 </script>
 
 

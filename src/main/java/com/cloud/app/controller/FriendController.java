@@ -46,12 +46,7 @@ public class FriendController {
 		return "friends";
 	}
 	
-	@RequestMapping("/searchUser")
-	public String searchUser(@RequestParam("userid") Integer userid,HttpSession session,HttpServletRequest request,HttpServletResponse response, Model model) {
-		
-		User user = userSerivce.getUserById(userid);
-		return "friends";
-	}
+	
 	
 	@RequestMapping("/addfriend")
 	public String addfriend(@RequestParam("friendId") Integer friendB,HttpSession session, Model model) {

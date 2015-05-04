@@ -42,7 +42,11 @@
     where USER_NAME = #{userName,jdbcType=VARCHAR} and
       PASSWORD = #{password,jdbcType=VARCHAR}
   </select>
-  
+  <select id="selectByUserNickName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select USER_ID, USER_NICKNAME
+    from USER_TABLE
+    where USER_NICKNAME = #{userNickName,jdbcType=VARCHAR}
+  </select>
   <!-- ****************************************************************************************************** -->
   <!-- ****************************************************************************************************** -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

@@ -1,9 +1,12 @@
 package com.cloud.framwork.dao;
 
+import com.cloud.app.model.Group;
 import com.cloud.app.model.User;
+
 import java.util.List;
 
 public interface UserMapper {
+	List<User> selectByUserNickName(String userNickName);
 	int myinsert(User record);
 	 User selectByNameAndPassword(User user);
     /**

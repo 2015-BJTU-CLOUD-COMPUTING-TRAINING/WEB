@@ -1,16 +1,21 @@
 package com.cloud.app.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cloud.app.model.Group;
 import com.cloud.app.model.Member;
+import com.cloud.app.model.Message;
 import com.cloud.app.model.User;
 import com.cloud.app.service.IGroupService;
 import com.cloud.framwork.dao.GroupMapper;
 import com.cloud.framwork.dao.MemberMapper;
+import com.cloud.framwork.dao.MessageMapper;
 
 @Service
 public class GroupServiceImpl implements IGroupService {
@@ -26,6 +31,12 @@ public class GroupServiceImpl implements IGroupService {
 	
 	@Autowired
 	private Member member;
+	
+	@Autowired
+	Message message;
+	
+	@Autowired
+	MessageMapper messageDao;
 
 	@Override
 	public List<Group> ShowGroup(int userId) {
@@ -35,13 +46,18 @@ public class GroupServiceImpl implements IGroupService {
 	}
 
 	@Override
-	public int exitGroup(String groupIds, Integer userId) {
+	public List<String> exitGroup(String groupIds, Integer userId) {
 		// TODO Auto-generated method stub
+		List<String> exitGroupResult = new ArrayList<String>();
 		String [] vals = groupIds.split(",");
 		for(String groupId:vals){
-			memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), userId);
 			group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
-			
+			//群主不可退群
+			if(group.getGroupLeaderId()==userId){
+				exitGroupResult.add("退出 "+group.getGroupName()+" 失败，请转移群主身份后再尝试");
+			}
+			else{
+			memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), userId);
 			//只有非群主可以退群，若是管理员，则置空管理员字段
 			if(group.getGroupDeputy1Id()==userId){
 				group.setGroupDeputy1Id(null);
@@ -51,8 +67,11 @@ public class GroupServiceImpl implements IGroupService {
 				group.setGroupDeputy3Id(null);
 			}
 			groupDao.updateByPrimaryKey(group);
+			exitGroupResult.add("退出 "+group.getGroupName()+" 成功");
+			}
+			
 		}
-		return 1;
+		return exitGroupResult;
 	}
 
 	@Override
@@ -97,6 +116,67 @@ public class GroupServiceImpl implements IGroupService {
 			
 		}
 		return AllMembers;
+	}
+
+	@Override
+	public List<Group> searchGroup(String groupIdOrName) {
+		// TODO Auto-generated method stub
+		List<Group> searchGroupResults=new ArrayList<Group>();
+		if(groupIdOrName==null||"".equals(groupIdOrName)){
+			searchGroupResults.add(null);
+		}else{
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isNum = pattern.matcher(groupIdOrName);
+		//如果是数字
+		if(isNum.matches()){
+			searchGroupResults.add(groupDao.selectByPrimaryKey(Integer.parseInt(groupIdOrName)));
+		}
+			searchGroupResults.addAll(groupDao.selectByGroupName(groupIdOrName));
+		
+		}
+		return searchGroupResults;
+		
+	}
+
+	@Override
+	public List<String> joinGroup(String groupIds, Integer userId) {
+		List<String> joinGroupResult = new ArrayList<String>();
+		String [] vals = groupIds.split(",");
+		for(String groupId:vals){
+			group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+			//当用户在群里时
+			if(memberDao.selectByMemberIdAndGroupId(Integer.parseInt(groupId), userId)!=null&&!memberDao.selectByMemberIdAndGroupId(Integer.parseInt(groupId), userId).equals(null)){
+				joinGroupResult.add("你已在 "+group.getGroupName()+" 组内！");
+			}
+			//当用户不在群里时
+			else{
+				message.setMessageId(null);
+				message.setFromId(userId);
+				message.setMessageType(5);
+				message.setMessageContent(Integer.parseInt(groupId));
+				message.setToId(group.getGroupLeaderId());
+				messageDao.Addmessage(message);
+				if(group.getGroupDeputy1Id()!=null){
+				message.setMessageId(null);
+				message.setToId(group.getGroupDeputy1Id());
+				messageDao.Addmessage(message);
+				}
+				if(group.getGroupDeputy2Id()!=null){
+				message.setMessageId(null);
+				message.setToId(group.getGroupDeputy2Id());
+				messageDao.Addmessage(message);
+				}
+				if(group.getGroupDeputy3Id()!=null){
+				message.setMessageId(null);
+				message.setToId(group.getGroupDeputy3Id());
+				messageDao.Addmessage(message);
+				}
+				joinGroupResult.add("申请加入 "+group.getGroupName()+" 成功！");
+				
+			}
+			
+		}
+		return joinGroupResult;
 	}
 	
 

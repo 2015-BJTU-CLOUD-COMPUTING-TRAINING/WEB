@@ -18,11 +18,14 @@ public interface IFileService {
 	 void getFile (HttpServletRequest request,  
 		      HttpServletResponse response, String uploadIds) throws Exception;
 	 
+	 void getGroupFile (HttpServletRequest request,  
+		      HttpServletResponse response, String uploadIds) throws Exception;
 	 List<UserAllFile> getAllFileByUserID(Integer userId);
 	 
 	 List<UserAllFile> getAllRecycleFileByUserID(Integer userId);
 	 
 	 int deleteFile(String uploadIds);
+	 List<String> deleteGroupFile(String uploadIds,Integer userId);
 	 int  deleteRecycleFile(String uploadIds);
 	 int  restore(String uploadIds);
 	 

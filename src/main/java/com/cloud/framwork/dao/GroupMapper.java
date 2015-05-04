@@ -5,7 +5,7 @@ import com.cloud.app.model.Group;
 import java.util.List;
 
 public interface GroupMapper {
-	
+	List<Group> selectByGroupName(String groupName);
 	 int myinsert(Group record);
 
 	List<Group> selectAllGroups(Integer userId);

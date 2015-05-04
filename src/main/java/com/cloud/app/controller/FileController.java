@@ -77,7 +77,16 @@ public class FileController {
 	@RequestMapping("/download")
 	public String download(String uploadIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		System.out.println(uploadIds);
 		fileService.getFile(request, response, uploadIds);
+		return null;
+	}
+	
+	@RequestMapping("/downloadGroup")
+	public String downloadGroup(String uploadIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println(uploadIds);
+		fileService.getGroupFile(request, response, uploadIds);
 		return null;
 	}
 
@@ -86,6 +95,16 @@ public class FileController {
 			HttpServletResponse response) throws Exception {
 		fileService.deleteFile(uploadIds);
 		return "redirect:/index";
+	}
+	@RequestMapping("/deleteGroupFile")
+	public void deleteGroupFile(String uploadIds, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		User user = (User) request.getSession().getAttribute("currentUser");
+		List<String> deleteGroupFileResult=fileService.deleteGroupFile(uploadIds,user.getUserId());
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(deleteGroupFileResult));	
+
 	}
 
 	@RequestMapping("/share")

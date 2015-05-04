@@ -11,7 +11,11 @@ public interface IGroupService {
 	
 	List<Group> ShowGroup(int userId);
 	
-	int exitGroup(String groupIds,Integer userId);
+	List<String>  exitGroup(String groupIds,Integer userId);
 	
 	List<User> ShowMembers(Integer groupId);
+	
+	List<Group>  searchGroup(String groupIdOrName);
+	
+	List<String>  joinGroup(String groupIds,Integer userId);
 }

@@ -275,9 +275,13 @@ public class FileServiceImpl implements IFileService{
 
 	@Override
 	public List<GroupAllFile> getAllFileByGroupID(Integer groupId) {
-
-		List<GroupAllFile> GroupAllFile=groupFileDao.selectAllByGroupIdAndState(groupId, 0);
-		return GroupAllFile;
+		
+		List<GroupAllFile> groupAllFile=new ArrayList<GroupAllFile>();
+		GroupAllFile groupinfo = new GroupAllFile();
+		groupinfo.setGroup(groupDao.selectByPrimaryKey(groupId));
+		groupAllFile.add(groupinfo);
+		groupAllFile.addAll(groupFileDao.selectAllByGroupIdAndState(groupId, 0));
+		return groupAllFile;
 	}
 
 	@Override
@@ -321,6 +325,114 @@ public class FileServiceImpl implements IFileService{
 			
 		}
 		return shareToGroupMessage;
+	}
+
+	@Override
+	public void getGroupFile(HttpServletRequest request,
+			HttpServletResponse response, String uploadIds) throws Exception {
+		//设置字符编码
+	 	request.setCharacterEncoding("UTF-8");
+	    //获得请求的fileId
+	 	String [] vals = uploadIds.split(",");
+	 	//下载文件路径
+	 	String downloadUrl;
+	 	//下载文件名称
+	    String downloadName="";
+	    
+	    //当存在多个文件时
+	    if(vals.length>1){
+	    //获得所有需要下载的文件所在路径
+	    String filesUrl[] = new String[vals.length];
+	    String filesName[] = new String[vals.length];
+	    int i=0;
+	    for(String uploadId:vals){
+	    	groupFile=groupFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+	    	hdfs=hdfsDao.selectByPrimaryKey(groupFile.getFileId());
+	    	logger.info(JSON.toJSONString(groupFile));
+	    	logger.info(JSON.toJSONString(hdfs));
+	    	
+	    	
+	    	if(i==0){
+	    		//设置打包文件名
+	    		 downloadName="【批量下载】"+groupFile.getFileName()+"等.zip";
+	    	}
+	    	//get the  path of targetfile
+	    	filesUrl[i]=hdfs.getFileUrl();
+	    	filesName[i]=groupFile.getFileName();
+	    	i++;
+	    	
+	    }
+	    //设置打包文件路径
+	    downloadUrl="/Users/cJack1913/Downloads/test/"+downloadName;
+	    //打包文件
+	    zipfile.zipFile(filesUrl,filesName, downloadUrl);
+	    }else{
+	    	groupFile=groupFileDao.selectByPrimaryKey(Integer.parseInt(vals[0]));
+	    	hdfs=hdfsDao.selectByPrimaryKey(groupFile.getFileId());
+	    	logger.info(JSON.toJSONString(groupFile));
+	    	logger.info(JSON.toJSONString(hdfs));
+	    	//设置文件路径和文件名
+		    downloadUrl=hdfs.getFileUrl();
+	    	downloadName=groupFile.getFileName();
+	    }
+	    
+	    logger.info(JSON.toJSONString(downloadUrl));
+    	logger.info(JSON.toJSONString(downloadName));
+    	
+    	// 清空response
+        response.reset();
+        // 设置response的Header
+	    response.setHeader("Content-disposition", "attachment; filename="  
+	        + new String(downloadName.getBytes("utf-8"), "ISO8859-1")); 
+	    response.setHeader("Content-Length", String.valueOf(new File(downloadUrl).length()));
+	    
+	    //设置输出流  
+	    BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());;
+	    //设置输入流
+	    BufferedInputStream bis = new BufferedInputStream(new FileInputStream(downloadUrl));
+	    
+	 	//写入文件
+	 	byte[] buff = new byte[2048];  
+	    int bytesRead;  
+	    while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {  
+	      bos.write(buff, 0, bytesRead);  
+	    }  
+	 
+	    //close the IO stream
+	    bis.close();
+	    File zipfile = new File(downloadUrl);
+	    zipfile.delete();
+	    bos.close();  
+		
+	}
+
+	@Override
+	public List<String> deleteGroupFile(String uploadIds,Integer userId) {
+		// TODO Auto-generated method stub
+		List<String> deleteGroupFileMessage = new ArrayList<String>();
+		long existedVolume;
+		String [] vals = uploadIds.split(",");
+		for(String uploadId:vals){
+			//将文件放入回收站
+			groupFile = groupFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+			if(groupFile.getUploaderId()==userId||groupDao.selectByPrimaryKey(groupFile.getGroupId()).getGroupLeaderId()==userId||groupDao.selectByPrimaryKey(groupFile.getGroupId()).getGroupDeputy1Id()==userId||groupDao.selectByPrimaryKey(groupFile.getGroupId()).getGroupDeputy2Id()==userId||groupDao.selectByPrimaryKey(groupFile.getGroupId()).getGroupDeputy3Id()==userId){
+				groupFile.setDeleteTime(new Date());
+				groupFile.setState(1);
+				groupFileDao.updateByPrimaryKey(groupFile);
+		    	//update用户existedVolume
+		    	hdfs = hdfsDao.selectByPrimaryKey(groupFile.getFileId());
+		    	group = groupDao.selectByPrimaryKey(groupFile.getGroupId());
+		    	existedVolume=group.getExistedVolume();
+		    	existedVolume-=hdfs.getFileSize();
+		    	group.setExistedVolume(existedVolume);
+		    	groupDao.updateByPrimaryKey(group);
+		    	deleteGroupFileMessage.add(groupFile.getFileName()+"  删除成功");
+			}else{
+				deleteGroupFileMessage.add(groupFile.getFileName()+"  无权删除");
+			}
+			
+		}
+		return deleteGroupFileMessage;
 	}
 
 	

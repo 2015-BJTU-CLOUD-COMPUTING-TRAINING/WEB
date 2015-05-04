@@ -71,6 +71,7 @@ public class MessageServiceImpl implements IMessageService {
 			memberDao.insert(member);
 		//申请入组
 		} else if (messages.getMessageType() == 5) {
+			//messageDao.deleteByFromIdAndContent(messageId)
 			member.setGroupId(messages.getMessageContent());
 			member.setMemberId(messages.getFromId());
 			memberDao.insert(member);

@@ -1,5 +1,8 @@
 package com.cloud.app.service;
 
+import java.util.List;
+
+import com.cloud.app.model.Group;
 import com.cloud.app.model.User;
 
 public interface IUserService {
@@ -12,4 +15,5 @@ public interface IUserService {
 	
 	 User getUserByNameAndPassword(User user);
 	 
+	 List<User>  searchUser(String userIdOrName);
 }

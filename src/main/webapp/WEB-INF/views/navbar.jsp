@@ -26,14 +26,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">一保七网盘</a>
+            <a class="navbar-brand" href="/cloud/index">一保七网盘</a>
         </div>
 		
         <!-- user dropdown starts -->
        <c:if test="${!empty sessionScope.currentUser }">
         <div class="btn-group pull-right">
+        <input type="hidden" value="${sessionScope.currentUser.userId}" id="currentUserId">
             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="glyphicon glyphicon-user"></i>
+                
                 <span class="hidden-sm hidden-xs">${sessionScope.currentUser.userNickname}</span>
                 <span class="caret"></span>
             </button>
@@ -132,7 +134,7 @@
       
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页</a></li>
+                <li class="active"><a href="/cloud/index">首页</a></li>
                  <c:if test="${!empty sessionScope.currentUser }">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">您有${fn:length(sessionScope.messages)}条消息待处理<span class="caret"></span></a>

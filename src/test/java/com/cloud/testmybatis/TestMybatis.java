@@ -190,4 +190,20 @@ public class TestMybatis {
 			logger.info(JSON.toJSONString(groupMember));
 		}
 	}
+	@Test
+	public void test17(){
+		List<Group> searchGroupResults = groupService.searchGroup("4");
+		logger.info(searchGroupResults);
+		for(Group searchGroupResult:searchGroupResults){
+			logger.info(JSON.toJSONString(searchGroupResult));
+		}
+	}
+	@Test
+	public void test18(){
+		List<String> joinGroupResults = groupService.joinGroup("1,2,3", 12);
+		logger.info(joinGroupResults);
+		for(String joinGroupResult:joinGroupResults){
+			logger.info(JSON.toJSONString(joinGroupResult));
+		}
+	}
 }

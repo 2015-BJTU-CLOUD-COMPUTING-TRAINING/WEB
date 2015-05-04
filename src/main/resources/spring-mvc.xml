@@ -53,6 +53,7 @@
             <mvc:exclude-mapping path="/login" />
             <mvc:exclude-mapping path="/regists" />
             <mvc:exclude-mapping path="/s/*"/>
+            <mvc:exclude-mapping path="/download"/>
             <bean  class="com.cloud.app.interceptors.JudgeLoginStateInterceptor">
             </bean>
         </mvc:interceptor>

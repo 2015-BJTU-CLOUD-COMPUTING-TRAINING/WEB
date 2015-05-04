@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.cloud.app.model.Group;
 import com.cloud.app.model.GroupAllFile;
 import com.cloud.app.model.User;
@@ -54,10 +55,14 @@ public class GroupController {
 	}
 	
 	@RequestMapping("/exitGroup")
-	public String exitGroup(@RequestParam("groupIds") String groupIds,HttpSession session, Model model) {
-		User user = (User) session.getAttribute("currentUser");
-		groupService.exitGroup(groupIds, user.getUserId());
-		return "redirect:/groups";
+	public void exitGroup(@RequestParam("groupIds") String groupIds,HttpServletRequest request,HttpServletResponse response) throws IOException {
+		User user = (User) request.getSession().getAttribute("currentUser");
+		
+		List<String> exitGroupResult=groupService.exitGroup(groupIds, user.getUserId());
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(exitGroupResult));	
+		
 	}
 	@RequestMapping("/creatGroup")
 	public String creatGroup(Group group,HttpSession session) {
@@ -72,7 +77,8 @@ public class GroupController {
 		//设置传输类型、编码格式
 		response.setContentType("text/javascript;charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().print(JSON.toJSONString(groupAllFile));
+		//SerializerFeature.DisableCircularReferenceDetect)避免mybatis返回List存在"$ref":"$[1].group"现象
+		response.getWriter().print(JSON.toJSONString(groupAllFile,SerializerFeature.DisableCircularReferenceDetect));
 	}
 	@RequestMapping("/showGroupMember")
 	public void showGroupMember(@RequestParam("groupId") Integer groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
@@ -91,4 +97,23 @@ public class GroupController {
 		response.getWriter().print(JSON.toJSONString(allGroups));		
 	}
 	
+	@RequestMapping("/searchGroup")
+	public void searchGroup(@RequestParam("groupIdOrName") String groupIdOrName,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.searchGroup(groupIdOrName)));		
+	}
+	@RequestMapping("/joinGroup")
+	public void joinGroup(@RequestParam("groupIds") String groupIds,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.joinGroup(groupIds,user.getUserId())));		
+	}
+	@RequestMapping("/searchUser")
+	public void searchUser(@RequestParam("userIdOrName") String userIdOrName,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(userSerivce.searchUser(userIdOrName)));		
+	}
 }
