@@ -52,8 +52,13 @@
             <mvc:exclude-mapping path="/registview" />
             <mvc:exclude-mapping path="/login" />
             <mvc:exclude-mapping path="/regists" />
-            <mvc:exclude-mapping path="/shareDetail" />
+            <mvc:exclude-mapping path="/s/*"/>
             <bean  class="com.cloud.app.interceptors.JudgeLoginStateInterceptor">
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/s/*"/>
+            <bean class="com.cloud.app.interceptors.GetMessageAndUserVInterceptor">
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

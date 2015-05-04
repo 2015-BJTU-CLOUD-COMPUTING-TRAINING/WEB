@@ -16,6 +16,62 @@
     <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="COMMENT" property="comment" jdbcType="VARCHAR" />
   </resultMap>
+   <!-- ****************************************************************************************************** -->
+	<!-- ****************************************************************************************************** -->
+  <insert id="myinsert" parameterType="com.cloud.app.model.GroupFile" >
+    <selectKey resultType="java.lang.Integer" keyProperty="uploadId" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into GROUP_FILE (GROUP_ID, FILE_NAME, FILE_ID, 
+      UPLOADER_ID,   
+       COMMENT)
+    values (#{groupId,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, #{fileId,jdbcType=INTEGER}, 
+      #{uploaderId,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAllByGroupIdAndState" parameterType="java.lang.Integer" resultMap="myBaseResultMap" >
+   
+    select *
+    from GROUP_FILE  where GROUP_ID = #{param1,jdbcType=INTEGER} and STATE=#{param2,jdbcType=INTEGER};
+  </select>
+  <resultMap id="myBaseResultMap" type="com.cloud.app.model.GroupAllFile" >
+      <id column="UPLOAD_ID" property="uploadId" jdbcType="INTEGER" />
+    <result column="GROUP_ID" property="groupId" jdbcType="INTEGER" />
+    <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+    <result column="FILE_ID" property="fileId" jdbcType="INTEGER" />
+    <result column="UPLOADER_ID" property="uploaderId" jdbcType="INTEGER" />
+    <result column="UPLOAD_TIME" property="uploadTime" jdbcType="TIMESTAMP" />
+    <result column="STATE" property="state" jdbcType="INTEGER" />
+    <result column="DELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="COMMENT" property="comment" jdbcType="VARCHAR" />
+    <association property="hdfs" javaType="com.cloud.app.model.HDFS" select="getHDFSByID" column="FILE_ID">			
+		</association>
+		<association property="userNickName" javaType="java.lang.String" select="getUserByID" column="UPLOADER_ID">			
+		</association>
+		<association property="group" javaType="com.cloud.app.model.Group" select="getGroupByID" column="GROUP_ID">			
+		</association>
+  </resultMap>
+  <!-- 手动设置别名 -->
+   <select id="getHDFSByID" resultType="com.cloud.app.model.HDFS" parameterType="java.lang.Integer" >
+   
+    select FILE_ID fileId, FILE_MD5 fileMd5, FILE_URL fileUrl, FILE_TYPE fileType, FILE_SIZE fileSize, COMMENT comment
+    from HDFS
+    where FILE_ID = #{fileId,jdbcType=INTEGER}
+  </select>
+  <select id="getUserByID" resultType="java.lang.String" parameterType="java.lang.Integer" >
+   
+    select USER_NICKNAME userNickname
+    from USER_TABLE
+    where USER_ID = #{userId,jdbcType=INTEGER}
+  </select>
+   <select id="getGroupByID" resultType="com.cloud.app.model.Group" parameterType="java.lang.Integer" >
+    select GROUP_ID groupId, GROUP_NAME groupName, GROUP_THEME groupTheme, GROUP_BUILDER_ID groupBuilderId, GROUP_LEADER_ID groupLeaderId, GROUP_DEPUTY1_ID groupDeputy1Id, 
+    GROUP_DEPUTY2_ID groupDeputy2Id, GROUP_DEPUTY3_ID groupDeputy3Id, TOTAL_VOLUME totalVolume, EXISTED_VOLUME existedVolume, GROUP_TIME_BUILD groupTimeBuild, 
+    COMMENT comment
+    from GROUP_TABLE
+    where GROUP_ID = #{groupId,jdbcType=INTEGER}
+  </select>
+  <!-- ****************************************************************************************************** -->
+  <!-- ****************************************************************************************************** -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     <!--
       WARNING - @mbggenerated

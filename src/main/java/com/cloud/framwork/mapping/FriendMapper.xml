@@ -34,7 +34,7 @@
 	</resultMap>
 	<select id="selectAllFriends" resultMap="myBaseResultMap"
 		parameterType="java.lang.Integer">
-		select USER_ID, USER_NAME , USER_NICKNAME from USER_TABLE where USER_ID in (select
+		select USER_ID, USER_NICKNAME from USER_TABLE where USER_ID in (select
 		FRIEND_B from FRIEND_TABLE where FRIEND_A= #{userId,jdbcType=INTEGER} union all select
 		FRIEND_A from FRIEND_TABLE where FRIEND_B= #{userId,jdbcType=INTEGER})
 		

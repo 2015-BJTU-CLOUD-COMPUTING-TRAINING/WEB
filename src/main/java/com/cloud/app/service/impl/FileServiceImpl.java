@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,11 +18,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
+import com.cloud.app.model.Group;
+import com.cloud.app.model.GroupAllFile;
+import com.cloud.app.model.GroupFile;
 import com.cloud.app.model.HDFS;
 import com.cloud.app.model.User;
 import com.cloud.app.model.UserAllFile;
 import com.cloud.app.model.UserFile;
 import com.cloud.app.service.IFileService;
+import com.cloud.framwork.dao.GroupFileMapper;
+import com.cloud.framwork.dao.GroupMapper;
 import com.cloud.framwork.dao.HDFSMapper;
 import com.cloud.framwork.dao.ShareMapper;
 import com.cloud.framwork.dao.UserFileMapper;
@@ -58,6 +64,18 @@ public class FileServiceImpl implements IFileService{
 	
 	@Autowired
 	UserMapper userDao;
+	
+	@Autowired
+	GroupFileMapper groupFileDao;
+	
+	@Autowired
+	GroupFile groupFile;
+	
+	@Autowired
+	GroupMapper groupDao;
+	
+	@Autowired
+	Group group;
 	
 	@Override
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
@@ -236,7 +254,6 @@ public class FileServiceImpl implements IFileService{
 
 	@Override
 	public int restore(String uploadIds) {
-		// TODO Auto-generated method stub
 		String [] vals = uploadIds.split(",");
 		long existedVolume;
 		for(String uploadId:vals){
@@ -254,6 +271,56 @@ public class FileServiceImpl implements IFileService{
 	    	userDao.updateByPrimaryKey(user);
 		}
 		return 1;
+	}
+
+	@Override
+	public List<GroupAllFile> getAllFileByGroupID(Integer groupId) {
+
+		List<GroupAllFile> GroupAllFile=groupFileDao.selectAllByGroupIdAndState(groupId, 0);
+		return GroupAllFile;
+	}
+
+	@Override
+	public List<String> shareToGroup(String uploadIds, String groupIds) {
+		// TODO Auto-generated method stub
+		List<String> shareToGroupMessage = new ArrayList<String>();
+		String [] uploads = uploadIds.split(",");
+		String [] groups = groupIds.split(",");
+		//获得所有分享文件的大小
+		long fileSize = 0;
+		for(String uploadId:uploads){
+			userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+			fileSize+=hdfsDao.selectByPrimaryKey(userFile.getFileId()).getFileSize();
+		}
+		
+		for(String groupId:groups){
+			group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+			
+			//空间不足时
+			if((group.getExistedVolume()+fileSize)>group.getTotalVolume()){
+				shareToGroupMessage.add(group.getGroupName()+"   剩余空间不足，分享失败！");
+			}
+			//空间充足时
+			else
+			{
+				for(String uploadId:uploads){
+					//转存至组空间
+					userFile = userFileDao.selectByPrimaryKey(Integer.parseInt(uploadId));
+					groupFile.setUploadId(null);
+					groupFile.setFileId(userFile.getFileId());
+					groupFile.setFileName(userFile.getFileName());
+					groupFile.setGroupId(Integer.parseInt(groupId));
+					groupFile.setUploaderId(userFile.getUserId());
+					groupFileDao.myinsert(groupFile);
+					//更新组容量
+					group.setExistedVolume(group.getExistedVolume()+hdfsDao.selectByPrimaryKey(userFile.getFileId()).getFileSize());
+				}
+				groupDao.updateByPrimaryKey(group);
+				shareToGroupMessage.add(group.getGroupName()+"   分享成功！");
+			}
+			
+		}
+		return shareToGroupMessage;
 	}
 
 	

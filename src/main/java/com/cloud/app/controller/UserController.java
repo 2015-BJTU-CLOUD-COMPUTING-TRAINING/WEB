@@ -99,7 +99,6 @@ public class UserController {
 	
 	@RequestMapping("/profile")
 	public String profile(@ModelAttribute("profileUser")User profileUser,HttpSession session,@RequestParam("passwordN") String passwordN,@RequestParam("passwordO") String passwordO,Model model){
-		System.out.println("--------------------------profile--------------------------");
 		//当没有填写新密码时，视为不修改密码
 		if("".equals(passwordN)||passwordN==null){
 			userService.update(profileUser);

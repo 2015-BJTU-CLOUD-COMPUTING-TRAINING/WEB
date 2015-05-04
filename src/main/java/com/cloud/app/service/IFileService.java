@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloud.app.model.GroupAllFile;
 import com.cloud.app.model.UserAllFile;
 import com.cloud.app.model.UserFile;
 
@@ -25,5 +26,8 @@ public interface IFileService {
 	 int  deleteRecycleFile(String uploadIds);
 	 int  restore(String uploadIds);
 	 
+	 List<GroupAllFile> getAllFileByGroupID(Integer groupId);
+	 
+	 List<String> shareToGroup(String uploadIds,String groupIds);
 	
 }

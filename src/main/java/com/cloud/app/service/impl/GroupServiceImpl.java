@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cloud.app.model.Group;
 import com.cloud.app.model.Member;
+import com.cloud.app.model.User;
 import com.cloud.app.service.IGroupService;
 import com.cloud.framwork.dao.GroupMapper;
 import com.cloud.framwork.dao.MemberMapper;
@@ -16,6 +17,9 @@ public class GroupServiceImpl implements IGroupService {
 	
 	@Autowired
 	private GroupMapper groupDao;
+	
+	@Autowired
+	private Group group;
 	
 	@Autowired
 	private MemberMapper memberDao;
@@ -36,6 +40,17 @@ public class GroupServiceImpl implements IGroupService {
 		String [] vals = groupIds.split(",");
 		for(String groupId:vals){
 			memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), userId);
+			group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+			
+			//只有非群主可以退群，若是管理员，则置空管理员字段
+			if(group.getGroupDeputy1Id()==userId){
+				group.setGroupDeputy1Id(null);
+			}else if(group.getGroupDeputy2Id()==userId){
+				group.setGroupDeputy2Id(null);
+			}else if(group.getGroupDeputy3Id()==userId){
+				group.setGroupDeputy3Id(null);
+			}
+			groupDao.updateByPrimaryKey(group);
 		}
 		return 1;
 	}
@@ -50,6 +65,38 @@ public class GroupServiceImpl implements IGroupService {
 		member.setGroupId(group.getGroupId());
 		memberDao.insert(member);
 		return 1;
+	}
+
+	@Override
+	public List<User> ShowMembers(Integer groupId) {
+		// TODO Auto-generated method stub
+		List<User> AllMembers = memberDao.selectAllMembers(groupId);
+		group = groupDao.selectByPrimaryKey(groupId);
+		for(User member:AllMembers){
+			if(member.getUserId()==group.getGroupBuilderId()){
+				if(member.getComment()==null){
+					member.setComment("创建者");
+				}else
+				member.setComment(member.getComment()+",创建者");
+			}
+			if(member.getUserId()==group.getGroupLeaderId()){
+				if(member.getComment()==null){
+					member.setComment("群主");
+				}else
+				member.setComment(member.getComment()+",群主");
+			}
+			if(member.getUserId()==group.getGroupDeputy1Id()||member.getUserId()==group.getGroupDeputy2Id()||member.getUserId()==group.getGroupDeputy3Id()){
+				if(member.getComment()==null){
+					member.setComment("管理员");
+				}else
+				member.setComment(member.getComment()+",管理员");
+			}
+			if(member.getComment()==null){
+				member.setComment("普通成员");
+			}
+			
+		}
+		return AllMembers;
 	}
 	
 

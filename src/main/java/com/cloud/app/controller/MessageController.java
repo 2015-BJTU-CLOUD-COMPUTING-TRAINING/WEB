@@ -9,9 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cloud.app.model.Message;
 import com.cloud.app.model.Messages;
-import com.cloud.app.model.User;
 import com.cloud.app.service.IMessageService;
 
 @Controller

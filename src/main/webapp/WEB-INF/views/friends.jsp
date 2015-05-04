@@ -152,7 +152,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <i class="glyphicon glyphicon-share icon-white"></i>
                                     分享
                                 </a>
-                                	 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#deleteModal">
+                                	 <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'friendId')" value="#deleteModal">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除好友
                                 </button>
@@ -164,7 +164,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel">是否删除？</h4>
                                             </div>
                                             <div class="row">
-                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('deleteFriend')">是</button>
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="Delete('deleteFriend','friendIds','friendId')">是</button>
                                                 <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
                                             </div>
                                             <div class="modal-footer">
@@ -213,7 +213,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   $('#search').click(function(){
       document.getElementById('searchResult').style.display="table";
   });
-
+//弹出确定框(目标弹窗，判获取参数的节点名)
+  function showYNModal(value,from){
+  	var obj=document.getElementsByName(from); 
+  	var s=''; 
+  	for(var i=0; i<obj.length; i++){ 
+  	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+  	}
+  	if(s==''){
+  		alert("你还没有选择任何内容!");
+  	}else{
+  		$(value).modal('show')
+  	}
+  	
+  }
+  //删除时的确认性操作(调用方法，传递参数的节点名，获取参数的节点名)
+  function Delete(type,target,from){ 
+  	 //选择所有name="from"的对象，返回数组 
+  	var obj=document.getElementsByName(from); 
+  	var s=''; 
+  	for(var i=0; i<obj.length; i++){ 
+  	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+  	}  
+  	
+  		document.getElementById(target).value=s;
+  		document.getElementById('OPform').action=type;
+  		document.getElementById('OPform').submit();
+  	 
+  }
   function chk(type){ 
 		 //选择所有name="'fileId'"的对象，返回数组 
 		var obj=document.getElementsByName('friendId'); 

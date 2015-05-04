@@ -39,10 +39,11 @@ public class JudgeLoginStateInterceptor implements HandlerInterceptor {
 		// TODO Auto-generated method stub
 		//刷新messges和用户容量
 		User currentUser = (User) request.getSession().getAttribute("currentUser");
+		if(null!=currentUser){
 		currentUser.setPassword(null);
 		request.getSession().setAttribute("messages", messageService.getAllMessages(currentUser.getUserId()));
 		request.getSession().setAttribute("currentUser", userService.getUserById(currentUser.getUserId()));
-
+		}
 	}
 
 	@Override
@@ -50,7 +51,6 @@ public class JudgeLoginStateInterceptor implements HandlerInterceptor {
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		// TODO Auto-generated method stub
-
 	}
 
 }

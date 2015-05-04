@@ -40,7 +40,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         }
         .sidebar-nav div li a i{
             font-size: 25px;
-
         }
         .sidebar-nav div li a span{
             font-size: 25px;
@@ -145,9 +144,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 <a href="#" class="btn btn-close btn-round btn-default"><i
                                         class="glyphicon glyphicon-remove"></i></a>
                             </div>
-                            <form name="OPform" id="OPform"  action="?" method="post">
+                           	 <form name="OPform" id="OPform"  action="?" method="post">
                             		<input id="groupIds" type="hidden" name="groupIds" value="?">
-                          		</form>
+                            		<input id="uploadIds" type="hidden" name="uploadIds" value="?">
+                            		<input id="memberIds" type="hidden" name="memberIds" value="?">
+                          	</form>
                             <div class="pull-right" style="margin-top: -0.45%">
                                 <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal" >
                                     <i class="glyphicon glyphicon-plus icon-white"></i>
@@ -173,7 +174,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                     <img src="images/tou.jpg" style="height: 50px;">
                                                     <span>群组号：xxx</span>
                                                 </div>
-                                                <button type="button" class="btn btn-primary"style="margin-left: 45%">加为好友</button>
+                                                <button type="button" class="btn btn-primary"style="margin-left: 45%">申请加入</button>
                                             </div>
                                             <div class="modal-footer">
 
@@ -212,7 +213,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal6">
+                                <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'groupId')" value="#myModal6">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     退出群组
                                 </button>
@@ -224,7 +225,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel6">是否退出该群组？</h4>
                                             </div>
                                             <div class="row">
-                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('exitGroup')">是</button>
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('exitGroup','groupIds','groupId')">是</button>
                                                 <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
                                             </div>
                                             <div class="modal-footer">
@@ -239,22 +240,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             <!-- put your content here -->
                             <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="groupTable">
                                 <thead>
-                                <tr tabindex="0">
-                                    <th><div class="checkbox"><label><input type="checkbox"  id="0" onclick="CheckAll(this.checked,'groupId')"></label></div></th>
+                                <tr id="groupTabletr" onclick="clickTr(this.id)">
+                                    <th><div class="checkbox"><label><input type="checkbox"  id="groupTabletrC" onclick="CheckAll(this.checked,'groupId')"></label></div></th>
                                     <th>组号</th>
                                     <th>头像</th>
                                     <th>组名</th>
                                     <th>主题</th>
+                                    <th>创建时间</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-								<c:forEach items="${requestScope.allGroups }" var="group">
-                                <tr tabindex="${group.groupId}">
-                                    <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="${group.groupId}"></label></div></td>
+								<c:forEach items="${requestScope.allGroups}" var="group">
+                                <tr id="Group${group.groupId}" onclick="clickTr(this.id)">
+                                    <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="Group${group.groupId}C"></label></div></td>
                                     <td>${group.groupId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
-                                    <td><a name="groupFile" onclick="showGroupFile()">${group.groupName}</a></td>
+                                    <td><a onclick="showGroupFile(${group.groupId})">${group.groupName}</a></td>
                                     <td>${group.groupTheme}</td>
+                                    <td><fmt:formatDate value="${group.groupTimeBuild}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
 								</c:forEach>
                                 </tbody>
@@ -267,7 +270,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <!--群组文件显示框-->
                     <div class="box-inner" id="boxForGroupFile" style="display: none">
                         <div class="box-header well" data-original-title="">
-                            <h2><i class="glyphicon glyphicon-star-empty"></i> 群文件</h2>
+                            <h2 id="GroupV"><i class="glyphicon glyphicon-star-empty"></i> 群文件</h2>
 
                             <div class="box-icon">
                                 <a href="#" class="btn btn-setting btn-round btn-default"><i
@@ -310,7 +313,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal4" >
+                                <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showMember(this.value)" id="showMembers" value="?">
                                     <i class="glyphicon glyphicon-pencil icon-white"></i>
                                     查看群成员
                                 </button>
@@ -324,19 +327,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                             <div class="modal-body" >
                                                 <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="memberTable">
                                                     <thead>
-                                                    <tr>
-                                                        <th><div class="checkbox"><label><input type="checkbox" id="selectAll1" onclick="selectAllOrNot1()"></label></div></th>
+                                                    <tr id="memberTabletr" onclick="clickTr(this.id)">
+                                                        <th><div class="checkbox"><label><input type="checkbox" id="memberTabletrC" onclick="CheckAll(this.checked,'memberId')"></label></div></th>
                                                         <th>头像</th>
                                                         <th>用户名</th>
+                                                        <th>角色</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody id="memberTableTbody">
 
-                                                    <tr tabindex="11" >
-                                                        <td><div class="checkbox"><label><input type="checkbox" name="select1" id="11"></label></div></td>
-                                                        <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
-                                                        <td>历程器</td>
-                                                    </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -347,7 +346,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal5">
+                                <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showYNModal(this.value,'fileId')" value="#myModal5">
                                     <i class="glyphicon glyphicon-trash icon-white"></i>
                                     删除文件
                                 </button>
@@ -359,7 +358,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                                 <h4 class="modal-title" id="myModalLabel4">是否删除该文件？</h4>
                                             </div>
                                             <div class="row">
-                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button">是</button>
+                                                <button class="col-md-2 col-md-offset-3 btn btn-success" data-dismiss="modal" type="button" onclick="chk('deleteGroupFile','uploadIds','uploadId')">是</button>
                                                 <button class="col-md-2 col-md-offset-2 btn btn-danger" data-dismiss="modal" type="button">否</button>
                                             </div>
                                             <div class="modal-footer">
@@ -375,23 +374,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                         <!--框内容-->
                         <div class="box-content">
+                        	<div id="GroupInfo">
+                        	</div>
                             <table class="table table-striped table-hover table-condensed bootstrap-datatable datatable responsive" id="fileTable">
                                 <thead>
-                                <tr>
-                                    <th><div class="checkbox"><label><input type="checkbox" id="selectAll2" onclick="selectAllOrNot2()"></label></div></th>
+                                <tr  id="fileTabletr" onclick="clickTr(this.id)">
+                                    <th><div class="checkbox"><label><input type="checkbox" id="fileTabletrC" onclick="CheckAll(this.checked,'fileId')"></label></div></th>
                                     <th>文件名</th>
                                     <th>大小</th>
-                                    <th>修改日期</th>
+                                    <th>上传者</th>
+                                    <th>上传日期</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-
-                                <tr tabindex="21">
-                                    <td><div class="checkbox"><label><input type="checkbox" id="21" name="select2"></label></div></td>
-                                    <td><i class="glyphicon glyphicon-file"></i><span class="hidden-sm hidden-xs"> java从入门到精通</span></td>
-                                    <td >30Mb</td>
-                                    <td>2017/08/23</td>
-                                </tr>
+                                <tbody id="fileTableTbody">
+                                
                                 </tbody>
                             </table>
                         </div>
@@ -405,58 +401,146 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     $('#search').click(function(){
         document.getElementById('searchResult').style.display="table";
     });
-</script>
-<script>
+//首行全选(自身是否被选择，目标节点名)
 function CheckAll(flag,which)
-{
+{	
 	var obj=document.getElementsByName(which);
     for (var i = 0; i < obj.length ; i++ )
         if (obj[i].type.toLowerCase() == 'checkbox')
         	obj[i].checked = flag;
 }
-function chk(type){ 
-	 //选择所有name="groupId"的对象，返回数组 
-	var obj=document.getElementsByName('groupId'); 
+//点击行
+function clickTr(id){ 
+    indexNum=id+"C";
+    document.getElementById(indexNum).click();
+}
+//弹出确定框(目标弹窗，判获取参数的节点名)
+function showYNModal(value,from){
+	var obj=document.getElementsByName(from); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}
+	if(s==''){
+		alert("你还没有选择任何内容!");
+	}else{
+		$(value).modal('show')
+	}
+	
+}
+//选择后操作(调用方法，传递参数的节点名，获取参数的节点名)
+function chk(type,target,from){ 
+	 //选择所有name="from"的对象，返回数组 
+	var obj=document.getElementsByName(from); 
 	var s=''; 
 	for(var i=0; i<obj.length; i++){ 
 	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
 	}  
 	
-	if(s=='') {
-	alert('你还没有选择任何内容!'); 
-	}else{ 
-		document.getElementById('groupIds').value=s;
+		document.getElementById(target).value=s;
 		document.getElementById('OPform').action=type;
 		document.getElementById('OPform').submit();
-	} 
+	 
 }
-</script>
-
-<script>
-    $('#groupTable tr').click(function(){
-        var indexNum = this.tabIndex;
-        document.getElementById(indexNum).click();
-    })
-    $('#memberTable tr').click(function(){
-        var indexNum = this.tabIndex;
-        document.getElementById(indexNum).click();
-    })
-    $('#fileTable tr').click(function(){
-        var indexNum = this.tabIndex;
-        document.getElementById(indexNum).click();
-    })
-
-
-</script>
-<script>
-    function showGroupFile(){
+//获得群成员
+function showMember(groupId){
+	$("#memberTable tr:not(:first)").remove();
+	
+	var url="showGroupMember";
+	var args = {"groupId":groupId,"time":new Date()};
+	$.getJSON(url,args,function(data){
+			for(var i=0;i<data.length;i++){
+				var userId = data[i].userId;
+				var userNickname = data[i].userNickname;
+				var comment = data[i].comment;
+				$("#memberTableTbody").append("<tr id='GroupMember"+userId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' id='GroupMember"+userId+"C' value='"+userId+"' name='memberId'></label></div></td><td><img src='images/toutou.jpg' class='img-responsive img-rounded'></td><td>"+userNickname+"</td><td>"+comment+"</td></tr>")
+			}
+	})
+	$('#myModal4').modal('show')
+}
+//获得群文件
+    function showGroupFile(groupId){
+    	document.getElementById('showMembers').value=groupId;
+    	 $("#fileTable tr:not(:first)").remove();
+    	var url="showGroupFile";
+    	var args = {"groupId":groupId,"time":new Date()};
+    	
+    	//格式化文件大小
+		var formatFileSize = function(fileSize){
+		if(Number(fileSize)/1099511627776>1){
+			fileSize = (Number(fileSize)/1099511627776).toFixed(2)+"T";
+		}else if(Number(fileSize)/1073741824>1){
+			fileSize = (Number(fileSize)/1073741824).toFixed(2)+"G";
+		}else if(Number(fileSize)/1048576>1){
+			fileSize = (Number(fileSize)/1048576).toFixed(2)+"M";
+		}else if(Number(fileSize)/1024>1){
+			fileSize = (Number(fileSize)/1024).toFixed(2)+"KB";
+		}else{
+			fileSize= fileSize+"B";
+		}
+		return fileSize;
+		}
+		//格式化日期
+		var formatDate = function(time, format) {
+		    var t = new Date(time);
+		    var tf = function(i) {
+		        return (i < 10 ? '0': '') + i
+		    };
+		    return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+		    function(a) {
+		        switch (a) {
+		        case 'yyyy':
+		            return tf(t.getFullYear());
+		            break;
+		        case 'MM':
+		            return tf(t.getMonth() + 1);
+		            break;
+		        case 'mm':
+		            return tf(t.getMinutes());
+		            break;
+		        case 'dd':
+		            return tf(t.getDate());
+		            break;
+		        case 'HH':
+		            return tf(t.getHours());
+		            break;
+		        case 'ss':
+		            return tf(t.getSeconds());
+		            break;
+		        }
+		    });
+		}
+		
+    	$.getJSON(url,args,function(data){
+    		if(data.length==0){
+    			$("#fileTableTbody").append("<div align='center' style='font-size: 24;margin-top: 7%;color: gray;' ><h2>啊哦，这里什么都没有哦。</h2></div>")
+    		}else{
+    			for(var i=0;i<data.length;i++){
+    				var uploadId = data[i].uploadId;
+    				var fileName = data[i].fileName;
+    				var fileSize = data[i].hdfs.fileSize;
+    				fileSize = formatFileSize(fileSize);
+    				
+    				var uploadTime = data[i].uploadTime;
+    				uploadTime= formatDate(uploadTime, 'yyyy-MM-dd HH:mm:ss');
+    				var uploaderNickName = data[i].userNickName;
+    				$("#fileTableTbody").append("<tr id='GroupFile"+uploadId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' id='GroupFile"+uploadId+"C' value='"+uploadId+"' name='uploadId'></label></div></td><td><i class='glyphicon glyphicon-file'></i><span class='hidden-sm hidden-xs'>"+fileName+"</span></td><td>"+fileSize+"</td><td>"+uploaderNickName+"</td><td>"+uploadTime+"</td></tr>")
+    			}
+    			var existedVolume = data[0].group.existedVolume;
+				var groupName = data[0].group.groupName;
+				var totalVolume = data[0].group.totalVolume;
+				var groupId= data[0].groupId;
+				existedVolume = formatFileSize(existedVolume);
+				totalVolume = formatFileSize(totalVolume);
+				
+				$("#GroupV").append("     "+groupName+":"+existedVolume+"/"+totalVolume); 
+    		}
+    	})
         document.getElementById("boxContent").style.display="none";
         document.getElementById("boxForGroupFile").style.display="block";
+        
     }
 </script>
-
-
-
 
 
 

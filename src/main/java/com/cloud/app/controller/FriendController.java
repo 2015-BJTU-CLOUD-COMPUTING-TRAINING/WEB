@@ -1,8 +1,6 @@
 package com.cloud.app.controller;
 
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cloud.app.model.User;
-import com.cloud.app.model.UserAllFile;
 import com.cloud.app.service.IFriendService;
 import com.cloud.app.service.IMessageService;
 import com.cloud.app.service.IUserService;
@@ -38,8 +35,6 @@ public class FriendController {
 
 	@RequestMapping("/showAllFriends")
 	public String showAllFriends(HttpSession session, Model model) {
-		System.out
-				.println("--------------------------showAllFriends--------------------------");
 		User user = (User) session.getAttribute("currentUser");
 		if(user==null){
 			return "redirect:/login";
@@ -70,9 +65,6 @@ public class FriendController {
 	@RequestMapping("/deleteFriend")
 	public String deleteFriend(String friendIds, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out
-				.println("--------------------------delete--------------------------");
-		System.out.println(friendIds);
 		User user = (User) request.getSession().getAttribute("currentUser");
 		friendService.deleteFriend(friendIds,user.getUserId());
 		return "redirect:/showAllFriends";

@@ -123,9 +123,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     </form>
                                 </div>
                                 <div id="fileInfo">
-                                <table class="table table-striped" width="100%"><thead><th>文件名称</th><th>文件大小</th><th>文件类型</th><th>文件修改日期</th></thead>
-                                <tbody id="test">
-                                </tbody></table>
+                               
                                 </div>
                             </div>
                         </div>
@@ -151,21 +149,64 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     function showFile() {
     	var existedVolume = document.getElementById("existedVolume").value;
     	var totalVolume = document.getElementById("totalVolume").value;
+    	var tableTitle = '<table class="table table-striped" width="100%"><thead><th>文件名称</th><th>文件大小</th><th>文件修改日期</th></thead><tbody>'
         var files = document.getElementById("file").files;
         if(files.length>0){
-        var tableTitle = '<table class="table table-striped" width="100%"><thead><th>文件名称</th><th>文件大小</th><th>文件类型</th><th>文件修改日期</th></thead><tbody>'
         var info1 = "";
         var totalV=Number(existedVolume);
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             var fName = file.name;
-            var fSize = file.size + "字节";
             totalV+=file.size;
-            var fType = file.type;
-            var fDate = file.lastModifiedDate;
-            info1 += "<tr><td>" + fName + "</td><td>" + fSize + "</td><td>" + fType + "</td><td>" + fDate + "</td></tr>"
+            var fSize = file.size;
+         	 //格式化文件大小
+			if(Number(fSize)/1099511627776>1){
+				fSize = (Number(fSize)/1099511627776).toFixed(2)+" T";
+			}else if(Number(fSize)/1073741824>1){
+				fSize = (Number(fSize)/1073741824).toFixed(2)+" G";
+			}else if(Number(fSize)/1048576>1){
+				fSize = (Number(fSize)/1048576).toFixed(2)+" M";
+			}else if(Number(fSize)/1024>1){
+				fSize = (Number(fSize)/1024).toFixed(2)+" KB";
+			}else{
+				fSize= fSize+" B";
+			}
+			
+			//格式化日期
+			var format = function(time, format) {
+			    var t = new Date(time);
+			    var tf = function(i) {
+			        return (i < 10 ? '0': '') + i
+			    };
+			    return format.replace(/yyyy|MM|dd|HH|mm|ss/g,
+			    function(a) {
+			        switch (a) {
+			        case 'yyyy':
+			            return tf(t.getFullYear());
+			            break;
+			        case 'MM':
+			            return tf(t.getMonth() + 1);
+			            break;
+			        case 'mm':
+			            return tf(t.getMinutes());
+			            break;
+			        case 'dd':
+			            return tf(t.getDate());
+			            break;
+			        case 'HH':
+			            return tf(t.getHours());
+			            break;
+			        case 'ss':
+			            return tf(t.getSeconds());
+			            break;
+			        }
+			    });
+			}
+			var fDate = file.lastModifiedDate;
+			fDate= format(fDate, 'yyyy-MM-dd HH:mm:ss');
+            info1 += "<tr><td>" + fName + "</td><td>" + fSize + "</td><td>" + fDate + "</td></tr>"
         }
-        document.getElementById("test").innerHTML = info1; 
+        document.getElementById("fileInfo").innerHTML = tableTitle + info1 + "</tbody></table>";
         document.getElementById("fileInfo").style.display = "block";
          if(totalVolume>totalV){
         	document.getElementById("uploadform").submit();

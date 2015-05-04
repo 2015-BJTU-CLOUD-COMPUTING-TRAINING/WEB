@@ -2,6 +2,7 @@ package com.cloud.testmybatis;
 
 
 
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
 import com.cloud.app.model.Group;
+import com.cloud.app.model.GroupAllFile;
 import com.cloud.app.model.Message;
 import com.cloud.app.model.Messages;
 import com.cloud.app.model.Share;
@@ -161,6 +163,31 @@ public class TestMybatis {
 		List<Group> groups=groupService.ShowGroup(9);
 		for(Group group:groups){
 			logger.info(JSON.toJSONString(group));
+		}
+	}
+
+	@Test
+	public void test14(){
+		List<GroupAllFile> groupAllFile = fileService.getAllFileByGroupID(1);
+		logger.info(groupAllFile);
+		for(GroupAllFile groupFile:groupAllFile){
+			logger.info(JSON.toJSONString(groupFile));
+		}
+	}
+	@Test
+	public void test15(){
+		List<User> groupAllMember = groupService.ShowMembers(1);
+		logger.info(groupAllMember);
+		for(User groupMember:groupAllMember){
+			logger.info(JSON.toJSONString(groupMember));
+		}
+	}
+	@Test
+	public void test16(){
+		List<String> shareToGroupMessages = fileService.shareToGroup("30,49,46", "1,2,3");
+		logger.info(shareToGroupMessages);
+		for(String groupMember:shareToGroupMessages){
+			logger.info(JSON.toJSONString(groupMember));
 		}
 	}
 }
