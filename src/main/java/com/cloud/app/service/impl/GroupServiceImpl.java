@@ -16,9 +16,15 @@ import com.cloud.app.service.IGroupService;
 import com.cloud.framwork.dao.GroupMapper;
 import com.cloud.framwork.dao.MemberMapper;
 import com.cloud.framwork.dao.MessageMapper;
+import com.cloud.framwork.dao.UserMapper;
 
 @Service
 public class GroupServiceImpl implements IGroupService {
+	@Autowired
+	User user;
+	
+	@Autowired
+	UserMapper userDao;
 	
 	@Autowired
 	private GroupMapper groupDao;
@@ -177,6 +183,197 @@ public class GroupServiceImpl implements IGroupService {
 			
 		}
 		return joinGroupResult;
+	}
+
+	@Override
+	public List<String> inviteGroup(String userIds, Integer currentuserId,
+			String groupId) {
+		List<String> inviteGroupResult = new ArrayList<String>();
+		String [] vals = userIds.split(",");
+		for(String userId:vals){
+			user = userDao.selectByPrimaryKey(Integer.parseInt(userId));
+			//当用户在群里时
+			if(memberDao.selectByMemberIdAndGroupId(Integer.parseInt(groupId), Integer.parseInt(userId))!=null&&!memberDao.selectByMemberIdAndGroupId(Integer.parseInt(groupId), Integer.parseInt(userId)).equals(null)){
+				inviteGroupResult.add("用户 "+user.getUserNickname()+" 已在组内！");
+			}
+			//当用户不在群里时
+			else{
+				message.setMessageId(null);
+				message.setFromId(currentuserId);
+				message.setMessageType(3);
+				message.setMessageContent(Integer.parseInt(groupId));
+				message.setToId(Integer.parseInt(userId));
+				messageDao.Addmessage(message);
+				
+				inviteGroupResult.add("已向 "+user.getUserNickname()+" 发送邀请！");
+				
+			}
+			
+		}
+		return inviteGroupResult;
+	}
+
+	@Override
+	public List<String> deleteMember(String userIds, Integer currentuserId,
+			String groupId) {
+		List<String> deleteMemberResult = new ArrayList<String>();
+		group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+		String [] vals = userIds.split(",");
+		for(String userId:vals){
+			Integer userid = Integer.parseInt(userId);
+			user = userDao.selectByPrimaryKey(userid);
+			//当成员为自己时
+			if(currentuserId.equals(Integer.parseInt(userId))){
+				deleteMemberResult.add(" "+user.getUserNickname()+" ，你不能删除你自己！");
+			}
+			//当成员是群主时
+			else if(userid.equals(group.getGroupLeaderId())){
+			
+				deleteMemberResult.add("你无权删除 "+user.getUserNickname()+" ");
+			}
+			//当成员是管理员时
+			else if(userid.equals(group.getGroupDeputy1Id())||userid.equals(group.getGroupDeputy2Id())||userid.equals(group.getGroupDeputy3Id())){
+				//当成员是管理员时，且当前用户不是群主
+				if(!group.getGroupLeaderId().equals(currentuserId)){
+					deleteMemberResult.add("你无权删除 "+user.getUserNickname()+" ");
+				}
+				//当成员是管理员时，当前用户是群主
+				else {
+					//删除member表记录
+					memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), Integer.parseInt(userId));
+					//置空Group表管理员字段
+					if(userid.equals(group.getGroupDeputy1Id())){
+						group.setGroupDeputy1Id(null);
+					}else if(userid.equals(group.getGroupDeputy2Id())){
+						group.setGroupDeputy2Id(null);
+					}else if(userid.equals(group.getGroupDeputy3Id())){
+						group.setGroupDeputy3Id(null);
+					}
+					deleteMemberResult.add("已成功删除 "+user.getUserNickname()+" ");
+				}
+			}
+			else{
+				//删除member表记录
+				memberDao.deleteByGroupIdAndUserId(Integer.parseInt(groupId), Integer.parseInt(userId));
+				deleteMemberResult.add("已成功删除 "+user.getUserNickname()+" ");
+			}
+			
+		}
+		//使更正后的Group表更新
+		groupDao.updateByPrimaryKey(group);
+		return deleteMemberResult;
+	}
+
+	@Override
+	public List<String> downToCommon(String userIds, Integer currentuserId,
+			String groupId) {
+		List<String> downToCommonResult = new ArrayList<String>();
+		group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+		String [] vals = userIds.split(",");
+		for(String userId:vals){
+			Integer userid = Integer.parseInt(userId);
+			user = userDao.selectByPrimaryKey(userid);
+			//当成员为自己时
+			if(currentuserId.equals(Integer.parseInt(userId))){
+				downToCommonResult.add(" "+user.getUserNickname()+" ，你无法将自己变为普通成员！");
+			}
+			//当成员是管理员时
+			else if(userid.equals(group.getGroupDeputy1Id())||userid.equals(group.getGroupDeputy2Id())||userid.equals(group.getGroupDeputy3Id())){
+					//置空Group表管理员字段
+					if(userid.equals(group.getGroupDeputy1Id())){
+						group.setGroupDeputy1Id(null);
+					}else if(userid.equals(group.getGroupDeputy2Id())){
+						group.setGroupDeputy2Id(null);
+					}else if(userid.equals(group.getGroupDeputy3Id())){
+						group.setGroupDeputy3Id(null);
+					}
+					downToCommonResult.add("已成功取消 "+user.getUserNickname()+" 的管理员权限");
+			}
+			else{
+				downToCommonResult.add(" "+user.getUserNickname()+" 已经是普通用户！");
+			}
+			
+		}
+		//使更正后的Group表更新
+		groupDao.updateByPrimaryKey(group);
+		return downToCommonResult;
+	}
+
+	@Override
+	public List<String> upToAdmin(String userIds, Integer currentuserId,
+			String groupId) {
+		List<String> upToAdminResult = new ArrayList<String>();
+		group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+		String [] vals = userIds.split(",");
+		for(String userId:vals){
+			Integer userid = Integer.parseInt(userId);
+			user = userDao.selectByPrimaryKey(userid);
+			//当成员为自己时
+			if(currentuserId.equals(Integer.parseInt(userId))){
+				upToAdminResult.add(" "+user.getUserNickname()+" ，你已经是群主，无需提升为管理员！");
+			}
+			//当成员是管理员时
+			else if(userid.equals(group.getGroupDeputy1Id())||userid.equals(group.getGroupDeputy2Id())||userid.equals(group.getGroupDeputy3Id())){
+				upToAdminResult.add(" "+user.getUserNickname()+" 已经是管理员！");
+			}
+			else{
+				if(group.getGroupDeputy1Id()==null||group.getGroupDeputy1Id().equals(null)){
+					group.setGroupDeputy1Id(userid);
+					upToAdminResult.add("已成功将 "+user.getUserNickname()+" 提升为管理员");
+				}else if(group.getGroupDeputy2Id()==null||group.getGroupDeputy2Id().equals(null)){
+					group.setGroupDeputy2Id(userid);
+					upToAdminResult.add("已成功将 "+user.getUserNickname()+" 提升为管理员");
+				}else if(group.getGroupDeputy3Id()==null||group.getGroupDeputy3Id().equals(null)){
+					group.setGroupDeputy3Id(userid);
+					upToAdminResult.add("已成功将 "+user.getUserNickname()+" 提升为管理员");
+				}else{
+					upToAdminResult.add("管理员人数已满！");
+				}
+			}
+			
+		}
+		//使更正后的Group表更新
+		groupDao.updateByPrimaryKey(group);
+		return upToAdminResult;
+	}
+
+	@Override
+	public List<String> upToLeader(String userIds, Integer currentuserId,
+			String groupId) {
+		List<String> upToLeaderResult = new ArrayList<String>();
+		group = groupDao.selectByPrimaryKey(Integer.parseInt(groupId));
+		String [] vals = userIds.split(",");
+		for(String userId:vals){
+			Integer userid = Integer.parseInt(userId);
+			user = userDao.selectByPrimaryKey(userid);
+			//当成员为自己时
+			if(currentuserId.equals(Integer.parseInt(userId))){
+				upToLeaderResult.add(" "+user.getUserNickname()+" ，你已经是群主！");
+			}
+			//当成员是管理员时
+			else if(userid.equals(group.getGroupDeputy1Id())||userid.equals(group.getGroupDeputy2Id())||userid.equals(group.getGroupDeputy3Id())){
+				//将成员设为群主
+				group.setGroupLeaderId(userid);
+				//将当前用户设为管理员
+				if(userid.equals(group.getGroupDeputy1Id())){
+					group.setGroupDeputy1Id(currentuserId);
+				}else if(userid.equals(group.getGroupDeputy2Id())){
+					group.setGroupDeputy2Id(currentuserId);
+				}else if(userid.equals(group.getGroupDeputy3Id())){
+					group.setGroupDeputy3Id(currentuserId);
+				}
+				upToLeaderResult.add("已成功将 "+user.getUserNickname()+" 提升为群主！");
+			}
+			//当成员是普通成员时
+			else{
+					upToLeaderResult.add(" "+user.getUserNickname()+" 是普通成员，你只能将管理员提升为群主！");
+				}
+			
+			
+		}
+		//使更正后的Group表更新
+		groupDao.updateByPrimaryKey(group);
+		return upToLeaderResult;
 	}
 	
 

@@ -18,4 +18,11 @@ public interface IGroupService {
 	List<Group>  searchGroup(String groupIdOrName);
 	
 	List<String>  joinGroup(String groupIds,Integer userId);
+	
+	List<String>  inviteGroup(String userIds,Integer userId,String groupId);
+	
+	List<String>  deleteMember(String userIds,Integer currentuserId,String groupId);
+	List<String>  downToCommon(String userIds,Integer currentuserId,String groupId);
+	List<String>  upToAdmin(String userIds,Integer currentuserId,String groupId);
+	List<String>  upToLeader(String userIds,Integer currentuserId,String groupId);
 }

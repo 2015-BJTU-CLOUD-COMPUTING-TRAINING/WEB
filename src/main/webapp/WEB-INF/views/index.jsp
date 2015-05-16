@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </a>
                                 <a class="btn btn-default" onclick="chk('share')">
                                     <i class="glyphicon glyphicon-share icon-white"></i>
-                                    分享
+                                    链接分享
                                 </a>
                                 <button type="button" class="btn btn-default"  data-toggle="modal" onclick="showGroups()" id="showGroups" >
                                     <i class="glyphicon glyphicon-pencil icon-white"></i>

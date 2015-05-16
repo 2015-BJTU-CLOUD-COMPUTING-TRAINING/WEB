@@ -1,5 +1,4 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@page import="com.cloud.app.model.Messages"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn"%> 
@@ -40,9 +39,9 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
-                <li><a href="profileview">Profile</a></li>
+                <li><a href="/cloud/profileview">Profile</a></li>
                 <li class="divider"></li>
-                <li><a href="logout">Logout</a></li>
+                <li><a href="/cloud/logout">Logout</a></li>
             </ul>
         </div>
         <input type="hidden" id="existedVolume" value="${sessionScope.currentUser.existedVolume}"/>
@@ -134,35 +133,43 @@
       
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/cloud/index">首页</a></li>
+                <li class="active"><a href="/cloud/index" id="indexLink">首页</a></li>
                  <c:if test="${!empty sessionScope.currentUser }">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">您有${fn:length(sessionScope.messages)}条消息待处理<span class="caret"></span></a>
+                <%-- <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="messageDropdown">您有${fn:length(sessionScope.messages)}条消息待处理<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                     <c:if test="${empty sessionScope.messages }">
 							<li style="text-align: center">没有待处理信息</li>
 					</c:if>
 					<c:if test="${!empty sessionScope.messages }">
                     <c:forEach items="${sessionScope.messages }" var="message">
-                    <li>
+                    <li style="width: 350px">
                      <form>
                     <input type="hidden" name="fromId" value="${message.fromId}"> 
-                    <input type="hidden" name="messageId" value="${message.messageId}">
+                    <input type="hidden" name="messageId" value="${message.messageId}" >
                     ${message.fromUser.userNickname}
                     <c:if test="${message.messageType=='1'}">请求添加你为好友</c:if>
                    <c:if test="${message.messageType=='3'}">邀请你加入${message.group.groupName}
                    </c:if>
                    <c:if test="${message.messageType=='5'}">申请加入${message.group.groupName}</c:if>
-                    </form> 
+                    <button style="position: absolute;right: 50px;" type="button" onclick="opMessage(this.id,this.value)" id="accept" value="${message.messageId}">接受</button>
+                    <button style="position: absolute;right: 0px;" type="button"  onclick="opMessage(this.id,this.value)" id="reject" value="${message.messageId}">拒绝</button>
+                    </form>
                     </li>
                     </c:forEach>
 					</c:if>
+                    </ul>
+                </li> --%>
+                <li class="dropdown"  id="messagesTitle">
+                    <a href="#"  class="dropdown-toggle" data-toggle="dropdown" id="messageDropdown">您有<span id="totalMessages"></span>条消息待处理<span class='caret'></span></a>
+                    <ul class="dropdown-menu"  role="menu" id="messagesList">
                     </ul>
                 </li>
                 </c:if>
                 <c:if test="${empty sessionScope.currentUser }">
                 </c:if>
                 <li><a href="#">帮助</a></li>
+              
             </ul>
         </div>
     </div>
@@ -170,5 +177,56 @@
 <script src="/cloud/js/jquery-2.1.3.min.js"></script>
 <script src="/cloud/js/bootstrap.min.js"></script>
 <script src="/cloud/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+getAllMessage();
+//刷新消息
+function getAllMessage(){
+	//若不存在当前用户则此处直接出错不运行
+	 var currentUserId = document.getElementById("currentUserId").value; 
+	var url="/cloud/getAllMessages";
+	var args = {"time":new Date()}
+	$.getJSON(url,args,function(data){
+		var messageCounts = data.length;
+		//清空节点的内容
+ 		$("#messagesList").empty();
+		$("#totalMessages").text(messageCounts);
+		if(messageCounts>0){
+			for(var i=0;i<data.length;i++){
+	 			var userNickname=data[i].fromUser.userNickname;
+	 			var messageType=data[i].messageType;
+	 			var messageId=data[i].messageId;
+	 			if(messageType=="1"){
+	 				$("#messagesList").append("<li name='eachMassgae' style='width: 350px'><form>"+userNickname+" 请求添加你为好友<button style='position: absolute;right: 50px;' type='button' onclick='opMessage(this.id,this.value)' id='accept' value="+messageId+">接受</button><button style='position: absolute;right: 0px;' type='button'  onclick='opMessage(this.id,this.value)' id='reject' value="+messageId+">拒绝</button></form></li>");
+	 			}else if(messageType=="3"){
+	 				var groupName=data[i].group.groupName;
+	 				$("#messagesList").append("<li  name='eachMassgae' style='width: 350px'><form>"+userNickname+" 邀请你加入 "+groupName+"<button style='position: absolute;right: 50px;' type='button' onclick='opMessage(this.id,this.value)' id='accept' value="+messageId+">接受</button><button style='position: absolute;right: 0px;' type='button'  onclick='opMessage(this.id,this.value)' id='reject' value="+messageId+">拒绝</button></form></li>");
+	 			}else if(messageType="5"){
+	 				var groupName=data[i].group.groupName;
+	 				$("#messagesList").append("<li name='eachMassgae' style='width: 350px'><form>"+userNickname+" 申请加入 "+groupName+"<button style='position: absolute;right: 50px;' type='button' onclick='opMessage(this.id,this.value)' id='accept' value="+messageId+">接受</button><button style='position: absolute;right: 0px;' type='button'  onclick='opMessage(this.id,this.value)' id='reject' value="+messageId+">拒绝</button></form></li>");
+	 			}
+	 			
+	 			}
+		}
+		else{
+		$("#messagesList").append("<li name='eachMassgae' style='text-align: center'>没有待处理信息</li>");
+		}
+	})
+
+}
+
+//操作消息
+function opMessage(url,messageId){
+	
+	/* $.ajaxSettings.async = false; */
+	//回调函数中调用刷新，否则数据有可能还是之前的
+		var args={"messageId":messageId};
+		$.getJSON(url,args,function(){
+			getAllMessage();
+		})
+		
+		
+}
+
+</script>
 </body>
 </html>

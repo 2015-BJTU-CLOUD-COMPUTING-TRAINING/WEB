@@ -116,4 +116,39 @@ public class GroupController {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(JSON.toJSONString(userSerivce.searchUser(userIdOrName)));		
 	}
+	@RequestMapping("/inviteGroup")
+	public void inviteGroup(@RequestParam("userIds") String userIds,@RequestParam("groupId") String groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.inviteGroup(userIds,user.getUserId(),groupId)));		
+	}
+	@RequestMapping("/deleteMember")
+	public void deleteMember(@RequestParam("userIds") String userIds,@RequestParam("groupId") String groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.deleteMember(userIds,user.getUserId(),groupId)));		
+	}
+	@RequestMapping("/downToCommon")
+	public void downToCommon(@RequestParam("userIds") String userIds,@RequestParam("groupId") String groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.downToCommon(userIds,user.getUserId(),groupId)));		
+	}
+	@RequestMapping("/upToAdmin")
+	public void upToAdmin(@RequestParam("userIds") String userIds,@RequestParam("groupId") String groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.upToAdmin(userIds,user.getUserId(),groupId)));		
+	}
+	@RequestMapping("/upToLeader")
+	public void upToLeader(@RequestParam("userIds") String userIds,@RequestParam("groupId") String groupId,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		User user = (User) request.getSession().getAttribute("currentUser");
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(groupService.upToLeader(userIds,user.getUserId(),groupId)));		
+	}
 }

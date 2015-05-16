@@ -40,14 +40,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             vertical-align: middle;
         }
         </style>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>一保七网盘</title>
-    <link href="/cloud/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/cloud/css/charisma-app.css" rel="stylesheet">
-
-    
 </head>
 
 <body >
@@ -210,7 +202,7 @@ function CheckAll(flag)
 $('#fileTable tr').click(function(){
     var indexNum = this.tabIndex;
     document.getElementById(indexNum).click();
-})
+}) 
 </script>
 </body>
 </html>

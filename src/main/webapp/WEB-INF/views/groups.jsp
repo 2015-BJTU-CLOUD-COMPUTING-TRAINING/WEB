@@ -249,7 +249,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                     <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="Group${group.groupId}C"></label></div></td>
                                     <td>${group.groupId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
-                                    <td><a id="showGroupFile${group.groupId}" onclick="showGroupFile(${group.groupId})">${group.groupName}</a></td>
+                                    <td><a id="showGroupFile${group.groupId}" onclick="showGroupFile(${group.groupId})" >${group.groupName}</a></td>
                                     <td>${group.groupTheme}</td>
                                     <td><fmt:formatDate value="${group.groupTimeBuild}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 								</tr>
@@ -319,6 +319,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                             <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                 <h4 class="modal-title" id="myModalLabel5">群成员</h4>
+                                                
                                             </div>
                                             <div class="modal-body" >
                                                 <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="memberTable">
@@ -334,10 +335,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
                                                     </tbody>
                                                 </table>
+                                                
                                             </div>
 
                                             <div class="modal-footer">
-
+                                            	<div align="center">
+                                            	<button type="button" class="btn btn-primary" onclick="opGroupMember('deleteMember')" id="deleteMemberbtn">删除成员</button>
+                                                <button type="button" class="btn btn-primary" onclick="opGroupMember('downToCommon')" id="downToCommonbtn">取消管理员权限</button>
+                                                <button type="button" class="btn btn-primary" onclick="opGroupMember('upToAdmin')" id="upToAdminbtn">提升为管理员</button>
+                                                <button type="button" class="btn btn-primary" onclick="opGroupMember('upToLeader')" id="upToLeaderbtn">提升为群主</button>
+												</div>
                                             </div>
                                         </div>
                                     </div>
@@ -487,6 +494,58 @@ function joinGroup(){
 				}
 			alert(result);
 			
+		})
+		
+	}
+}
+//邀请入组inviteGroup
+function inviteGroup(){
+	var obj=document.getElementsByName("searchUserId"); 
+	var	groupId=document.getElementById('showMembers').value;
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}
+	if(s==''){
+		alert("你还没有选择任何内容!");
+	}
+	else{
+		var url="inviteGroup";
+		var args={"userIds":s,"groupId":groupId};
+		$.getJSON(url,args,function(data){
+			var result="";
+			for(var i=0;i<data.length;i++){
+				result += data[i]+"\n";
+				}
+			alert(result);
+			
+		})
+		
+	}
+}
+//管理群成员
+function opGroupMember(url){
+	var obj=document.getElementsByName("memberId"); 
+	var	groupId=document.getElementById('showMembers').value;
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}
+	if(s==''){
+		alert("你还没有选择任何内容!");
+	}
+	else{
+		var args={"userIds":s,"groupId":groupId};
+		$.getJSON(url,args,function(data){
+			var result="";
+			for(var i=0;i<data.length;i++){
+				result += data[i]+"\n";
+				}
+			alert(result);
+			groupId="showGroupFile"+groupId;
+			//刷新前一个页面，否则可能出现失去权限仍然拥有操作按钮的情况
+			document.getElementById(groupId).click();
+			document.getElementById('showMembers').click();
 		})
 		
 	}
@@ -651,8 +710,14 @@ function showMember(groupId){
 			var groupDeputy2Id =data[0].group.groupDeputy2Id;
 			var groupDeputy3Id =data[0].group.groupDeputy3Id;
 			var currentUserId = document.getElementById("currentUserId").value;
+			if(currentUserId!=groupLeaderId){
+				 document.getElementById("downToCommonbtn").style.display="none";
+				 document.getElementById("upToAdminbtn").style.display="none";
+				 document.getElementById("upToLeaderbtn").style.display="none";
+			}
 			if(currentUserId!=groupLeaderId&&currentUserId!=groupDeputy1Id&&currentUserId!=groupDeputy2Id&&currentUserId!=groupDeputy3Id){
-				 document.getElementById("addMemberbtn").style.display="none";
+				document.getElementById("addMemberbtn").style.display="none"; 
+				document.getElementById("deleteMemberbtn").style.display="none";
 			}
     	})
         document.getElementById("boxContent").style.display="none";

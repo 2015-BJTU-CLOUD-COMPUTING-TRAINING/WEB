@@ -114,35 +114,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                             	<input id="friendIds" type="hidden" name="friendIds" value="?">
                            		 </form>
                             <div class="pull-right" style="margin-top: -0.45%">
-                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal" >
+                                <button type="button" class="btn btn-default"  data-toggle="modal" data-target="#myModal3" id="addMemberbtn">
                                     <i class="glyphicon glyphicon-plus icon-white"></i>
-                                    添加好友
+                                    添加成员
                                 </button>
-                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" style="margin-top: 15%">
                                         <div class="modal-content" >
                                             <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                                <h4 class="modal-title" id="myModalLabel">添加好友</h4>
+                                                <h4 class="modal-title" id="myModalLabel1">添加好友</h4>
                                             </div>
                                             <div class="modal-body" >
-                                                <label style="margin-left:4.5%">请输入用户名进行查找：</label>
+                                                <label style="margin-left:4.5%">请输入用户名/用户ID进行查找：</label>
                                                 <form class="form-inline" style="text-align: center">
-                                                <input type="text" class="form-control" style="width: 80%">
-                                                <button type="button" class="btn btn-primary" id="search">查找</button>
-                                                    </form>
+                                                    <input type="text" class="form-control" style="width: 80%" id="searchUser">
+                                                    <button type="button" class="btn btn-primary" id="searchUserbtn">查找</button>
+                                                </form>
                                             </div>
-                                            <div style="display: none;width: 100%" id="searchResult">
+                                             <div style="display: none;width: 100%" id="searchUserResult">
                                                 <label style="margin-left: 7%">搜索结果：</label>
-                                                
-                                                <div style="margin-left: 7%">
-                                                    <img src="images/tou.jpg" style="height: 50px;">
-                                                    <span>百度账号：xxx</span>
-                                                </div>
-                                                <button type="button" class="btn btn-primary"style="margin-left: 45%">加为好友</button>
+                                                <table class="table table-striped table-hover bootstrap-datatable datatable responsive" id="searchUserTable">
+                                                    <thead id="searchUserTablethead">
+                                                    </thead>
+                                                    <tbody id="searchUserTableTbody">
+                                                    </tbody>
+                                                </table>
+                                                <button type="button" class="btn btn-primary"style="margin-left: 45%" onclick="inviteFriend()">发送请求</button>
                                             </div>
                                             <div class="modal-footer">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -210,9 +211,61 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <script>
-  $('#search').click(function(){
-      document.getElementById('searchResult').style.display="table";
-  });
+$('#searchUserbtn').click(function(){
+ 	var userIdOrName=document.getElementById('searchUser').value;
+ 	var url="searchUser";
+ 	var args={"userIdOrName":userIdOrName}
+ 	$.getJSON(url,args,function(data){
+ 		$("#searchUserTable tr").remove();
+ 		if(data[0]==null){
+ 			$("#searchUserTablethead").append("<tr><td>没有找到任何东西</td></tr>")
+ 		}else{
+ 			$("#searchUserTablethead").append("<tr id='searchUserTabletr' onclick='clickTr(this.id)'><th><div class='checkbox'><label><input type='checkbox' id='searchUserTabletrC' onclick='ChecksearchUserIdAll(this.checked)'></label></div></th><th>ID</th><th>昵称</th></tr>")
+ 		for(var i=0;i<data.length;i++){
+ 			var userId=data[i].userId;
+ 			var userNickName=data[i].userNickname;
+ 			$("#searchUserTableTbody").append("<tr id='searchUser"+userId+"' onclick='clickTr(this.id)'><td><div class='checkbox'><label><input type='checkbox' name='searchUserId' value='"+userId+"' id='searchUser"+userId+"C'></label></div></td><td>"+userId+"</td><td>"+userNickName+"</td></tr>")	
+ 			}
+ 		}})
+     document.getElementById('searchUserResult').style.display="table";
+ }); 
+//添加好友
+function inviteFriend(){
+	var obj=document.getElementsByName("searchUserId"); 
+	var s=''; 
+	for(var i=0; i<obj.length; i++){ 
+	if(obj[i].checked) s+=obj[i].value+','; //如果选中，将value添加到变量s中 
+	}
+	if(s==''){
+		alert("你还没有选择任何内容!");
+	}
+	else{
+		var url="inviteFriend";
+		var args={"userIds":s};
+		$.getJSON(url,args,function(data){
+			var result="";
+			for(var i=0;i<data.length;i++){
+				result += data[i]+"\n";
+				}
+			alert(result);
+			
+		})
+		
+	}
+}
+//searchUserId首行全选(自身是否被选择，目标节点名)
+function ChecksearchUserIdAll(flag)
+{	
+	var obj=document.getElementsByName("searchUserId");
+    for (var i = 0; i < obj.length ; i++ )
+        if (obj[i].type.toLowerCase() == 'checkbox')
+        	obj[i].checked = flag;
+}
+//点击行
+function clickTr(id){ 
+    indexNum=id+"C";
+    document.getElementById(indexNum).click();
+}
 //弹出确定框(目标弹窗，判获取参数的节点名)
   function showYNModal(value,from){
   	var obj=document.getElementsByName(from); 

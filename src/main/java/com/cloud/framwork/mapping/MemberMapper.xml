@@ -66,9 +66,9 @@
     <selectKey resultType="java.lang.Integer" keyProperty="membersId" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into MEMBER_TABLE (GROUP_ID, MEMBER_ID, TIME_BUILD, 
+    insert into MEMBER_TABLE (GROUP_ID, MEMBER_ID,  
       COMMENT)
-    values (#{groupId,jdbcType=INTEGER}, #{memberId,jdbcType=INTEGER}, #{timeBuild,jdbcType=TIMESTAMP}, 
+    values (#{groupId,jdbcType=INTEGER}, #{memberId,jdbcType=INTEGER},  
       #{comment,jdbcType=VARCHAR})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.cloud.app.model.Member" >

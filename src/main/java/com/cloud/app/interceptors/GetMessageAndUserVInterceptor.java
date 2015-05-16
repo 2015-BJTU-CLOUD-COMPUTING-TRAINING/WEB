@@ -34,7 +34,7 @@ public class GetMessageAndUserVInterceptor implements HandlerInterceptor {
 				User currentUser = (User) request.getSession().getAttribute("currentUser");
 				if(null!=currentUser){
 				currentUser.setPassword(null);
-				request.getSession().setAttribute("messages", messageService.getAllMessages(currentUser.getUserId()));
+//				request.getSession().setAttribute("messages", messageService.getAllMessages(currentUser.getUserId()));
 				request.getSession().setAttribute("currentUser", userService.getUserById(currentUser.getUserId()));
 				}
 	}

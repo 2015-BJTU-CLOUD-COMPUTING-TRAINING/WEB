@@ -54,35 +54,34 @@ public class MessageServiceImpl implements IMessageService {
 	}
 
 	@Override
-	public int acceptMessage(Messages messages) {
-		// TODO Auto-generated method stub
-		messageDao.updateMessageState(messages.getMessageId(), 1);
+	public int acceptMessage(String messageId) {
+		message = messageDao.selectByPrimaryKey(Integer.parseInt(messageId));
 
 		// 请求加好友
-		if (messages.getMessageType() == 1) {
-			friend.setFriendA(messages.getFromId());
-			friend.setFriendB(messages.getToId());
+		if (message.getMessageType() == 1) {
+			friend.setFriendA(message.getFromId());
+			friend.setFriendB(message.getToId());
 			friendDao.insert(friend);
 		}
 		// 邀请入组
-		else if (messages.getMessageType() == 3) {
-			member.setGroupId(messages.getMessageContent());
-			member.setMemberId(messages.getToId());
+		else if (message.getMessageType() == 3) {
+			member.setGroupId(message.getMessageContent());
+			member.setMemberId(message.getToId());
 			memberDao.insert(member);
 		//申请入组
-		} else if (messages.getMessageType() == 5) {
+		} else if (message.getMessageType() == 5) {
 			//messageDao.deleteByFromIdAndContent(messageId)
-			member.setGroupId(messages.getMessageContent());
-			member.setMemberId(messages.getFromId());
+			member.setGroupId(message.getMessageContent());
+			member.setMemberId(message.getFromId());
 			memberDao.insert(member);
 		}
-
+		messageDao.updateMessageState(message.getMessageId(), 1);
 		return 1;
 	}
 
 	@Override
-	public int rejectMessage(Messages messages) {
-		messageDao.updateMessageState(messages.getMessageId(), 2);
+	public int rejectMessage(String messageId) {
+		messageDao.updateMessageState(Integer.parseInt(messageId), 2);
 		return 1;
 
 	}

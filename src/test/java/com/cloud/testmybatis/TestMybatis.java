@@ -3,6 +3,7 @@ package com.cloud.testmybatis;
 
 
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -111,7 +112,7 @@ public class TestMybatis {
 		List<Messages> messages = messageService.getAllMessages(9);
 		for(Messages message:messages){
 			if(message.getMessageId()==4){
-				messageService.acceptMessage(message);
+				messageService.acceptMessage(message.getMessageId().toString());
 			}
 		}
 	}
@@ -121,7 +122,7 @@ public class TestMybatis {
 		List<Messages> messages = messageService.getAllMessages(9);
 		for(Messages message:messages){
 			if(message.getMessageId()==3){
-				messageService.rejectMessage(message);
+				messageService.rejectMessage(message.getMessageId().toString());
 			}
 		}
 	}
@@ -205,5 +206,14 @@ public class TestMybatis {
 		for(String joinGroupResult:joinGroupResults){
 			logger.info(JSON.toJSONString(joinGroupResult));
 		}
+	}
+	@Test
+	public void test19(){
+		List<Messages> allMessages = null; 
+		logger.info(JSON.toJSONString(allMessages));
+		allMessages = new ArrayList<Messages>();
+		logger.info(JSON.toJSONString(allMessages));
+ 		 allMessages = messageService.getAllMessages(9);
+ 		logger.info(JSON.toJSONString(allMessages));
 	}
 }

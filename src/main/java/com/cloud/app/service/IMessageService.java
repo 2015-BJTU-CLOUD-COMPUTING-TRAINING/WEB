@@ -13,7 +13,7 @@ public interface IMessageService {
 	
 	 List<Messages> getAllMessages(Integer userId);
 	 
-	 int acceptMessage(Messages messages);
+	 int acceptMessage(String messageId);
 	 
-	 int rejectMessage(Messages messages);
+	 int rejectMessage(String messageId);
 }
