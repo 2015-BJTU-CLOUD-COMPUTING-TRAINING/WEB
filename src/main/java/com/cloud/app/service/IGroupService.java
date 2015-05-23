@@ -22,7 +22,20 @@ public interface IGroupService {
 	List<String>  inviteGroup(String userIds,Integer userId,String groupId);
 	
 	List<String>  deleteMember(String userIds,Integer currentuserId,String groupId);
+	
 	List<String>  downToCommon(String userIds,Integer currentuserId,String groupId);
+	
 	List<String>  upToAdmin(String userIds,Integer currentuserId,String groupId);
+	
 	List<String>  upToLeader(String userIds,Integer currentuserId,String groupId);
+	
+	List<Group> selectAllGroups();
+	
+	int deleteGroup(Integer groupId);
+	
+	Group getGroupById(Integer groupId);
+	
+	Group getGroupByGroupName(String groupName);
+	
+	int update(Group group);
 }

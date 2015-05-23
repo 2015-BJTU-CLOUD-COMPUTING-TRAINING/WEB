@@ -376,5 +376,35 @@ public class GroupServiceImpl implements IGroupService {
 		return upToLeaderResult;
 	}
 	
+	@Override
+	public List<Group> selectAllGroups() {
+		// TODO Auto-generated method stub
+		return groupDao.selectAll();
+	}
+
+	@Override
+	public int deleteGroup(Integer groupId) {
+		// TODO Auto-generated method stub
+		return groupDao.deleteByPrimaryKey(groupId);
+	}
+
+	@Override
+	public Group getGroupById(Integer groupId) {
+		// TODO Auto-generated method stub
+		return groupDao.selectByPrimaryKey(groupId);
+	}
+
+	@Override
+	public int update(Group group) {
+		// TODO Auto-generated method stub
+		return groupDao.updateByPrimaryKey(group);
+	}
+
+	@Override
+	public Group getGroupByGroupName(String groupName) {
+		// TODO Auto-generated method stub
+		return groupDao.adminSelectByGroupName(groupName);
+	}
+	
 
 }

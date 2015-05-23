@@ -6,9 +6,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class Group {
 	
-    @Override
+	@Override
 	public String toString() {
-		return "Group [groupId=" + groupId + ", groupName=" + groupName
+		return "Group [groupLeaderNickname=" + groupLeaderNickname
+				+ ", groupId=" + groupId + ", groupName=" + groupName
 				+ ", groupTheme=" + groupTheme + ", groupBuilderId="
 				+ groupBuilderId + ", groupLeaderId=" + groupLeaderId
 				+ ", groupDeputy1Id=" + groupDeputy1Id + ", groupDeputy2Id="
@@ -16,6 +17,11 @@ public class Group {
 				+ ", totalVolume=" + totalVolume + ", existedVolume="
 				+ existedVolume + ", groupTimeBuild=" + groupTimeBuild
 				+ ", comment=" + comment + "]";
+	}
+    private String groupLeaderNickname;
+
+	public String getGroupLeaderNickname() {
+		return groupLeaderNickname;
 	}
 
 	/**

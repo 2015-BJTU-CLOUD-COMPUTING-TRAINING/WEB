@@ -62,6 +62,11 @@
             <bean class="com.cloud.app.interceptors.GetMessageAndUserVInterceptor">
             </bean>
         </mvc:interceptor>
+        <mvc:interceptor>
+        <mvc:mapping path="/admin"/>
+        <bean  class="com.cloud.app.interceptors.JudgeAdminInterceptor">
+            </bean>
+        </mvc:interceptor>
     </mvc:interceptors>
     
       

@@ -88,18 +88,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
             <div class="item active">
-                <img src="/cloud/images/网盘10.jpg"  alt="1 slide">
+                <img src="/cloud/images/image10.jpg"  alt="1 slide">
                 <div class="carousel-caption">
                 </div>
             </div>
             <div class="item">
-                <img src="/cloud/images/网盘20.jpg" alt="2 slide">
+                <img src="/cloud/images/image20.jpg" alt="2 slide">
                 <div class="carousel-caption">
                 </div>
             </div>
 
             <div class="item">
-                <img src="/cloud/images/网盘30.jpg" alt="3 slide">
+                <img src="/cloud/images/image30.jpg" alt="3 slide">
                 <div class="carousel-caption">
                 </div>
             </div>

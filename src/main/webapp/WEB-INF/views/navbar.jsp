@@ -135,31 +135,6 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/cloud/index" id="indexLink">首页</a></li>
                  <c:if test="${!empty sessionScope.currentUser }">
-                <%-- <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="messageDropdown">您有${fn:length(sessionScope.messages)}条消息待处理<span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                    <c:if test="${empty sessionScope.messages }">
-							<li style="text-align: center">没有待处理信息</li>
-					</c:if>
-					<c:if test="${!empty sessionScope.messages }">
-                    <c:forEach items="${sessionScope.messages }" var="message">
-                    <li style="width: 350px">
-                     <form>
-                    <input type="hidden" name="fromId" value="${message.fromId}"> 
-                    <input type="hidden" name="messageId" value="${message.messageId}" >
-                    ${message.fromUser.userNickname}
-                    <c:if test="${message.messageType=='1'}">请求添加你为好友</c:if>
-                   <c:if test="${message.messageType=='3'}">邀请你加入${message.group.groupName}
-                   </c:if>
-                   <c:if test="${message.messageType=='5'}">申请加入${message.group.groupName}</c:if>
-                    <button style="position: absolute;right: 50px;" type="button" onclick="opMessage(this.id,this.value)" id="accept" value="${message.messageId}">接受</button>
-                    <button style="position: absolute;right: 0px;" type="button"  onclick="opMessage(this.id,this.value)" id="reject" value="${message.messageId}">拒绝</button>
-                    </form>
-                    </li>
-                    </c:forEach>
-					</c:if>
-                    </ul>
-                </li> --%>
                 <li class="dropdown"  id="messagesTitle">
                     <a href="#"  class="dropdown-toggle" data-toggle="dropdown" id="messageDropdown">您有<span id="totalMessages"></span>条消息待处理<span class='caret'></span></a>
                     <ul class="dropdown-menu"  role="menu" id="messagesList">

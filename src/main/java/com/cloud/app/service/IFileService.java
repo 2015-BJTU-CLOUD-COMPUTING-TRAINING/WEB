@@ -25,8 +25,11 @@ public interface IFileService {
 	 List<UserAllFile> getAllRecycleFileByUserID(Integer userId);
 	 
 	 int deleteFile(String uploadIds);
+	 
 	 List<String> deleteGroupFile(String uploadIds,Integer userId);
+	 
 	 int  deleteRecycleFile(String uploadIds);
+	 
 	 int  restore(String uploadIds);
 	 
 	 List<GroupAllFile> getAllFileByGroupID(Integer groupId);

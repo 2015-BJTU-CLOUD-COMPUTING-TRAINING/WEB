@@ -151,4 +151,40 @@ public class GroupController {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(JSON.toJSONString(groupService.upToLeader(userIds,user.getUserId(),groupId)));		
 	}
+	@RequestMapping("/groupManagement")
+	public String selectAllGroups(HttpSession session,Model model) {
+		List<Group> allGroups = groupService.selectAllGroups();
+		model.addAttribute("allGroups",allGroups);
+		return "groupManagement";
+	}
+	@RequestMapping("/deleteGroup")
+	public String deleteGroup(@RequestParam(value="groupIds1")String groupIds1,Model model){
+		String[] idVals = groupIds1.split(",");
+		for(int i=0;i<idVals.length;i++){
+			groupService.deleteGroup(Integer.parseInt(idVals[i]));
+		}
+		return "redirect:/groupManagement";
+	}
+	@RequestMapping("/updateGroupVolume")
+	public String updateGroupVolume(@RequestParam(value="groupIds1")String groupIds1,@RequestParam(value="groupIds2")String groupIds2,Model model){
+		String[] idVals = groupIds1.split(",");
+		String[] volumeVals = groupIds2.split(",");
+		for (int i = 0; i < idVals.length; i++) {
+			Group group = groupService.getGroupById(Integer.parseInt(idVals[i]));
+			group.setTotalVolume(Long.parseLong(volumeVals[i]));
+			groupService.update(group);
+		}
+		return "redirect:/groupManagement";
+	}
+	
+	@RequestMapping("/searchGroupAdmin")
+	public void searchGroupAdmin(@RequestParam(value="groupName")String groupName,HttpServletRequest request,HttpServletResponse response) throws IOException{
+		Group group = groupService.getGroupByGroupName(groupName);
+		System.out.println(groupName);
+		System.out.println(JSON.toJSONString(group));
+		response.setContentType("text/javascript;charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().print(JSON.toJSONString(group));
+		
+	}
 }

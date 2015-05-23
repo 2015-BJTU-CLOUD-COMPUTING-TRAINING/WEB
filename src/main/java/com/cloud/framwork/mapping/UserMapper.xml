@@ -47,6 +47,12 @@
     from USER_TABLE
     where USER_NICKNAME = #{userNickName,jdbcType=VARCHAR}
   </select>
+  <select id="adminSelectByUserNickname" resultMap="BaseResultMap" parameterType="java.lang.String">
+	 select USER_ID, USER_NAME,USER_NICKNAME, PASSWORD, BJTU_EMAIL, BJTU_NUMBER, PHONE, TOTAL_VOLUME, 
+    EXISTED_VOLUME, USER_TYPE, USER_STATE, USER_TIME_BUILD, COMMENT, BIRTHDAY
+    from USER_TABLE
+    where USER_NICKNAME= #{userNickname,jdbcType=VARCHAR}
+	</select>
   <!-- ****************************************************************************************************** -->
   <!-- ****************************************************************************************************** -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

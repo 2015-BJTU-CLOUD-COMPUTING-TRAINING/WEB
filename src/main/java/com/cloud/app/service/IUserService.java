@@ -16,4 +16,12 @@ public interface IUserService {
 	 User getUserByNameAndPassword(User user);
 	 
 	 List<User>  searchUser(String userIdOrName);
+	 
+	 List<User> selectAllUsers();
+	 
+	 int deleteUser(Integer userId);
+	 
+	 User getUserByUserNickname(String userNickname);
+	 
+	 
 }

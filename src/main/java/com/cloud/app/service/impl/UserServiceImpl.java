@@ -67,6 +67,22 @@ public class UserServiceImpl implements IUserService{
 		return searchUserResults;
 	}
 	
+	@Override
+	public List<User> selectAllUsers() {
+		// TODO Auto-generated method stub
+		return userDao.selectAll();
+	}
+	@Override
+	public int deleteUser(Integer userId) {
+		// TODO Auto-generated method stub
+		return userDao.deleteByPrimaryKey(userId);
+	}
+	@Override
+	public User getUserByUserNickname(String userNickname) {
+		// TODO Auto-generated method stub
+		return userDao.adminSelectByUserNickname(userNickname);
+	}
+	
 	
 	
 
