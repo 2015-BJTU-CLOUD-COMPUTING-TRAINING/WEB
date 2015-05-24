@@ -216,4 +216,6 @@ public class TestMybatis {
  		 allMessages = messageService.getAllMessages(9);
  		logger.info(JSON.toJSONString(allMessages));
 	}
+	
+	
 }

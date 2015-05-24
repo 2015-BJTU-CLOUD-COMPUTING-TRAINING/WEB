@@ -80,13 +80,13 @@ public class FileServiceImpl implements IFileService{
 	@Override
 	public void saveFile(MultipartFile file,HttpServletRequest request,Integer userId){
 		try {  
-			String hash = hashValue.getHashValue(file, 32);
+			String hash = hashValue.getHashValue(file, 16);
 			
 			//get the root path of webapp 
 		    String rootPath = request.getSession().getServletContext()  
 		        .getRealPath(""); 
             //set the file path 
-            String path ="/Users/cJack1913/Downloads/test/"+hash+file.getOriginalFilename();  
+            String path ="/Users/cJack1913/Downloads/test/"+hash;  
             //save file
             File localFile = new File(path);  
             file.transferTo(localFile);  
@@ -102,11 +102,7 @@ public class FileServiceImpl implements IFileService{
             userFile.setUserId(userId);
 			userFile.setFileName(file.getOriginalFilename());
             userFileDao.myinsert(userFile);
-           /*
-            * 此处还查hash
-            * 回滚
-            * 
-            */
+           
             
             
         } catch (Exception e) {  
@@ -129,6 +125,7 @@ public class FileServiceImpl implements IFileService{
 		 	String downloadUrl;
 		 	//下载文件名称
 		    String downloadName="";
+		    
 		    
 		    //当存在多个文件时
 		    if(vals.length>1){
@@ -191,8 +188,10 @@ public class FileServiceImpl implements IFileService{
 		 
 		    //close the IO stream
 		    bis.close();
+		    if(vals.length>1){
 		    File zipfile = new File(downloadUrl);
 		    zipfile.delete();
+		    }
 		    bos.close();  
 		    
 		    
