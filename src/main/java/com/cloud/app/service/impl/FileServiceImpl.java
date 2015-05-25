@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,7 +31,7 @@ import com.cloud.framwork.dao.HDFSMapper;
 import com.cloud.framwork.dao.ShareMapper;
 import com.cloud.framwork.dao.UserFileMapper;
 import com.cloud.framwork.dao.UserMapper;
-import com.cloud.testmybatis.TestMybatis;
+import com.cloud.util.HDFSTool;
 import com.cloud.util.HashValue;
 import com.cloud.util.ZipFile;
 @Service("fileService")
@@ -86,10 +85,16 @@ public class FileServiceImpl implements IFileService{
 		    String rootPath = request.getSession().getServletContext()  
 		        .getRealPath(""); 
             //set the file path 
-            String path ="/Users/cJack1913/Downloads/test/"+hash;  
+            String path ="/Users/Tans/Downloads/test/"+hash;  
             //save file
             File localFile = new File(path);  
             file.transferTo(localFile);  
+            
+            /******Hadoop上传文件start******/
+            HDFSTool.getInstance().upLoadFile("/"+hash, path);
+			localFile.delete();
+            /******Hadoop上传文件end******/
+            
             System.out.println("filepath"+path);
             System.out.println(new Date(localFile.lastModified()));
             hdfs.setFileMd5(hash);
@@ -151,7 +156,7 @@ public class FileServiceImpl implements IFileService{
 		    	
 		    }
 		    //设置打包文件路径
-		    downloadUrl="/Users/cJack1913/Downloads/test/"+downloadName;
+		    downloadUrl="/Users/Tans/Downloads/test/"+downloadName;
 		    //打包文件
 		    zipfile.zipFile(filesUrl,filesName, downloadUrl);
 		    }else{
@@ -362,7 +367,7 @@ public class FileServiceImpl implements IFileService{
 	    	
 	    }
 	    //设置打包文件路径
-	    downloadUrl="/Users/cJack1913/Downloads/test/"+downloadName;
+	    downloadUrl="/Users/Tans/Downloads/test/"+downloadName;
 	    //打包文件
 	    zipfile.zipFile(filesUrl,filesName, downloadUrl);
 	    }else{

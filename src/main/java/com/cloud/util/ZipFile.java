@@ -20,10 +20,16 @@ public class ZipFile {
 	 int i = 0;
 	 for(String fileUrl:filesUrl){
 		 //获得hdfs保留的文件
+		 /**********Hadoop 批量下载start************/
+		 HDFSTool.getInstance().downloadFile(
+					"hdfs://172.31.34.33:9000" + fileUrl,
+					"/Users/Tans/Downloads/test/");
 		 File oldfile = new File(fileUrl);
 		 InputStream  oldfileStream  = new FileInputStream(oldfile);     
 		 //复制用户自定义名称的文件
-		 String newfileUrl = fileUrl.substring(0,fileUrl.lastIndexOf("/")+1)+filesName[i];
+		 String newfileUrl = "/Users/Tans/Downloads/test/"
+				 + filesName[i];
+		 /**********Hadoop 批量下载end************/
 		 File newfile = new File(newfileUrl);
 		 FileOutputStream newfileStream = new FileOutputStream(newfile); 
 		 byte[] bufferc = new byte[2048];
