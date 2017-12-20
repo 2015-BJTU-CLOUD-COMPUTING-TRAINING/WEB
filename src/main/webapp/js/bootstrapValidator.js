@@ -3969,7 +3969,7 @@
 }(window.jQuery));
 ;(function($) {
     $.fn.bootstrapValidator.i18n.ip = $.extend($.fn.bootstrapValidator.i18n.ip || {}, {
-        'default': 'Please enter a valid IP address',
+        defaults: 'Please enter a valid IP address',
         ipv4: 'Please enter a valid IPv4 address',
         ipv6: 'Please enter a valid IPv6 address'
     });
@@ -4019,7 +4019,7 @@
                 /* falls through */
                 default:
                     valid   = ipv4Regex.test(value) && ipv6Regex.test(value);
-                    message = options.message || $.fn.bootstrapValidator.i18n.ip.default;
+                    message = options.message || $.fn.bootstrapValidator.i18n.ip.defaults;
                     break;
             }
 

@@ -245,7 +245,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </thead>
                                 <tbody>
 								<c:forEach items="${requestScope.allGroups}" var="group">
-                                <tr id="Group${group.groupId}" onclick="clickTr(this.id)">
+                                <tr id="Group${group.Id}" onclick="clickTr(this.id)">
                                     <td><div class="checkbox"><label><input type="checkbox" name="groupId" value="${group.groupId}" id="Group${group.groupId}C"></label></div></td>
                                     <td>${group.groupId}</td>
                                     <td><img src="images/tou.jpg" class="img-responsive img-rounded"></td>
